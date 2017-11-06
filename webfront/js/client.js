@@ -1,32 +1,45 @@
-var socket = io.connect('104.236.30.76:8082');
-//var socket = io.connect('localhost:8080');
-
-socket.on('sync', function(conn, users){
-	$('#numPlayers').html(conn);
-	// $playerField = $('#players'); 
-	// $playerField.empty();
-	// console.log(users);
-	
-	// for (var i = 0; i<users.length; i++){
-	// 	console.log(users[i]);
-	// 	$playerField.append("<li>" + users[i] + "</li>");
-	// }
-});
+//var socket = io.connect('104.236.30.76:8080');
+var socket = null;
+var role = null;
+var mission = null;
+var phase = null;
+var roomCode = null;
+//var game = new Game();
 
 $(document).ready( function(){
 	$('#joinButton').click( function(){
-		var username = $('#username').val();
-		joinGame(socket, username);
+		connectToSocket();
+		
+		roomCode = $('#roomCode').val();
+		if(roomCode != 0){
+			joinGame(roomCode);
+		}
+	});
+
+	$('#hostButton').click( function(){
+		// var username = $('#username').val();
+		// joinGame(socket, username);
 	});
 });
 
 $(window).on('beforeunload', function(){
-	socket.emit('leaveGame');
+	socket.emit('leaveGame', roomCode);
 });
 
-function joinGame(socket, username){
-	socket.emit('joinGame', username);
-	//socket.emit('sync');
-	$('#nameEntry').hide();
-	$('#lobbyScreen').show();	
+function joinGame(code){
+	socket.emit('joinGame', code);
+
+	$('#startPage').hide();
+	$('#lobbyScreen').show();
 }
+
+function connectToSocket(){
+	socket = io.connect('localhost:8080');
+	
+	socket.on('sync', function(conn){
+		$('#numPlayers').html(conn);
+	});
+}
+
+
+

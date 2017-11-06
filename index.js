@@ -3,15 +3,13 @@ var path = require('path');
 var app = express();
 
 var connections = 0;
-var users = [];
 
 //Static resources server
-//app.use(express.static(__dirname + 'webfront/'));
 app.use(express.static(path.join(__dirname, 'webfront/')));
 
-var server = app.listen(8082, function () {
-	var port = server.address();
-	console.log('Server running at %s', port);
+var server = app.listen(8080, function () {
+	var port = server.address().port;
+	console.log('Server running at port %s', port);
 });
 
 var io = require('socket.io')(server);
@@ -20,34 +18,29 @@ var io = require('socket.io')(server);
 
 io.on('connection', function(client) {
 	console.log('User connected');
-	connections++;
 
 	client.on('sync', function(data){
-		//Receive data from clients
-		//update ball positions
 		//Broadcast data to clients
-		client.emit('sync', connections, users);
-		client.broadcast.emit('sync', connections, users);
-
-		//I do the cleanup after sending data, so the clients know
-		//when the tank dies and when the balls explode
+		// client.emit('sync', io.sockets.adapter.rooms[roomCode].length);
+		// client.broadcast.emit('sync', io.sockets.adapter.rooms['my_room'].length);
 	});
 
-	client.on('joinGame', function(username){
-		console.log(username + " has joined the Game");
-		users.push(username);
-		console.log(users);
-		client.emit('sync', connections, users);
-		client.broadcast.emit('sync', connections, users);
+	client.on('joinGame', function(room){
+		console.log("User has joined the Game");
+		//users.push(username);
+		//console.log(users);
+		client.join(room);
+		client.emit('sync', io.sockets.adapter.rooms[room].length);
+		client.broadcast.to(room).emit('sync', io.sockets.adapter.rooms[room].length);
 	});
 
-	client.on('leaveGame', function(){
+	client.on('hostGame', function(){
+
+	});
+
+	client.on('leaveGame', function(room){
 		console.log('User has left the game');
-		connections--;
-		client.broadcast.emit('sync', connections, users);		
+		client.broadcast.to(room).emit('sync', io.sockets.adapter.rooms[room].length);		
 	});
 });
 
-// User.prototype = {
-
-// }

@@ -18,19 +18,19 @@
     </head>
 
     <body style="text-align:center">
-
-         <div id="nameEntry" class="container col-lg-offset-3 col-lg-6" style="display:block;">
-            <h4>Enter Username</h4>
-            <input type="text" id="username" style="margin-bottom:20px;"><br>
-            <button class="btn btn-primary" id="joinButton">Join game</button>
+         <div id="startPage" class="container col-lg-offset-3 col-lg-6" style="display:block;">
+            <button id="hostButton" class="btn btn-primary" style="margin-top:30px;">Host game</button> 
+            
+            <h4 style="margin-top:30px;">Enter Room Code</h4>
+            <input type="text" id="roomCode" style="margin-bottom:20px;"><br>
+            <button id="joinButton" class="btn btn-primary">Join game</button>
         </div>
 
         <div id="lobbyScreen" class="container col-lg-offset-3 col-lg-6" style="display:none;">
             <h3>Players Connected</h3>
             <span id="numPlayers">0</span> <span>/ 5</span>
             <br>
-            <!-- <h4 style="margin-top:30px;">Players</h4>
-            <ul id="players"></ul> -->
+           
         </div>
     </body>
 
