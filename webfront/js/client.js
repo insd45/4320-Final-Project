@@ -45,6 +45,16 @@ $(document).ready( function(){
 		users = userList;
 		console.log("Users recieved data from host");
 		$('#numPlayers').html(users.length);
+		
+		$('#userList').empty();
+		for(var i = 0; i < users.length; i++){
+			if(users[i].isHost){
+				$('#userList').append("<li class='list-group-item' style='font-weight: bold;'>"+ users[i].username +"</li>");
+			} else{
+				$('#userList').append("<li class='list-group-item'>"+ users[i].username +"</li>");
+			}
+		}
+
 		console.log(users);
 	});
 });
