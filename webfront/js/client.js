@@ -1,22 +1,20 @@
 var socket = io();
-var role = null;
-var mission = null;
-var phase = null;
-var roomCode = null;
 var user = new User();
+var users = [];
 var game;
 
 $(document).ready( function(){
 	
 	$('#joinButton').click( function(){		
-		createUser();
+		createUser(false);
 		socket.emit('joinGame', user);
 		joinGame();
 		
 	});
 
 	$('#hostButton').click( function(){
-		createUser();
+		createUser(true);
+		//users.push(user);
 		socket.emit('hostGame', user);
 		joinGame();
 	});
@@ -31,15 +29,35 @@ $(document).ready( function(){
 		$('#lobbyCode').html(code);
 		$('#lobbyDisplay').show();
 	});
+
+	socket.on('userJoined', function(newUser){
+		//host holds the master list of users
+		if(user.isHost){
+			console.log("Host emitted user array");
+			users.push(newUser);
+			socket.emit('updateUsers', users);
+		} else {
+			console.log("user update ended");
+		}
+	});
+
+	socket.on('updateUsers', function(userList){
+		users = userList;
+		console.log("Users recieved data from host");
+		$('#numPlayers').html(users.length);
+		console.log(users);
+	});
 });
 
 $(window).on('beforeunload', function(){
 	socket.emit('leaveGame', user);
 });
 
-function createUser(){
+function createUser(host){
 	var username = $('#username').val();
 	var lobbyCode = $('#roomCode').val();
+	
+	user.isHost = host;
 	user.username = username;
 	user.lobby = lobbyCode;
 	console.log(user);

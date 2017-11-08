@@ -4,6 +4,8 @@ function User(){
     var username = "";
     var lobby = "";
     var clientId = "";
+    var isHost;
+    var hostClientId = "";
 }
 
 User.prototype = {

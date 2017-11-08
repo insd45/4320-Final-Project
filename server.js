@@ -28,13 +28,20 @@ io.on('connection', function(client) {
 		console.log("Host has started a lobby");
 		console.log(client.id);
 		console.log(user);
+
+		
+
 		var room = client.id;
 		room = room.substring(0,5);
 		room = room.toUpperCase();
+
+		user.clientId = client.id;
+		user.lobby = room;
+
 		console.log("Host lobby code is " + room);
 		client.join(room);
 		client.emit('hostCode', room);
-		client.emit('sync', io.sockets.adapter.rooms[room].length);
+		client.emit('userJoined', user);
 		//console.log(client.rooms)
 		//client.emit('sync', io.sockets.adapter.rooms[room].length);
 		//client.broadcast.to(room).emit('sync', io.sockets.adapter.rooms[room].length);
@@ -44,19 +51,23 @@ io.on('connection', function(client) {
 		console.log("User has joined the Game");
 		var room = user.lobby;
 		var username = user.username;
-		console.log(user.lobby +" "+ user.username);
 		room = room.toUpperCase();
 		console.log(username + " joining lobby " + room);
 		client.join(room);
-		console.log(client.rooms)
-		client.emit('sync', io.sockets.adapter.rooms[room].length);
-		client.broadcast.to(room).emit('sync', io.sockets.adapter.rooms[room].length);
+		console.log(client.rooms);
+		client.emit('userJoined', user);
+		client.broadcast.to(room).emit('userJoined', user);
 	});
 
 	client.on('leaveGame', function(room){
 		// console.log('User has left room ' + client.rooms);
 		// console.log(io.sockets.adapter.rooms[room].length);
 		// client.broadcast.to(room).emit('sync', io.sockets.adapter.rooms[room].length);		
+	});
+
+	client.on('updateUsers', function(users){
+		client.emit('updateUsers', users);
+		client.broadcast.to(users[0].lobby).emit('updateUsers', users);
 	});
 });
 
