@@ -1,45 +1,55 @@
-//var socket = io.connect('104.236.30.76:8080');
-var socket = null;
+var socket = io();
 var role = null;
 var mission = null;
 var phase = null;
 var roomCode = null;
-//var game = new Game();
+var user = new User();
+var game;
 
 $(document).ready( function(){
-	$('#joinButton').click( function(){
-		connectToSocket();
+	
+	$('#joinButton').click( function(){		
+		createUser();
+		socket.emit('joinGame', user);
+		joinGame();
 		
-		roomCode = $('#roomCode').val();
-		if(roomCode != 0){
-			joinGame(roomCode);
-		}
 	});
 
 	$('#hostButton').click( function(){
-		// var username = $('#username').val();
-		// joinGame(socket, username);
+		createUser();
+		socket.emit('hostGame', user);
+		joinGame();
+	});
+
+	socket.on('sync', function(conn){
+		console.log("synced from server");
+		$('#numPlayers').html(conn);
+	});
+
+	socket.on('hostCode', function(code){
+		user.lobby = code;
+		$('#lobbyCode').html(code);
+		$('#lobbyDisplay').show();
 	});
 });
 
 $(window).on('beforeunload', function(){
-	socket.emit('leaveGame', roomCode);
+	socket.emit('leaveGame', user);
 });
 
-function joinGame(code){
-	socket.emit('joinGame', code);
+function createUser(){
+	var username = $('#username').val();
+	var lobbyCode = $('#roomCode').val();
+	user.username = username;
+	user.lobby = lobbyCode;
+	console.log(user);
+}
 
+function joinGame(code){
 	$('#startPage').hide();
 	$('#lobbyScreen').show();
 }
 
-function connectToSocket(){
-	socket = io.connect('localhost:8080');
-	
-	socket.on('sync', function(conn){
-		$('#numPlayers').html(conn);
-	});
-}
 
 
 
