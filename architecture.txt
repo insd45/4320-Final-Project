@@ -1,0 +1,4 @@
+Player disconnected
+- cant update this information to the players
+- but, can handle reconnects - host will resync their player data
+- host cannot dissconnect, otherwise the game is over (they hold the master game data)

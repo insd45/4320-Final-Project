@@ -49,6 +49,7 @@ io.on('connection', function(client) {
 
 	client.on('joinGame', function(user){
 		console.log("User has joined the Game");
+		user.clientId = client.id;
 		var room = user.lobby;
 		var username = user.username;
 		room = room.toUpperCase();
@@ -59,15 +60,20 @@ io.on('connection', function(client) {
 		client.broadcast.to(room).emit('userJoined', user);
 	});
 
-	client.on('leaveGame', function(room){
-		// console.log('User has left room ' + client.rooms);
-		// console.log(io.sockets.adapter.rooms[room].length);
-		// client.broadcast.to(room).emit('sync', io.sockets.adapter.rooms[room].length);		
+	client.on('leaveGame', function(user){
+		console.log("USER LEFT: " + client.id);
+		console.log("USER: " + user);
+		client.broadcast.to(user.lobby).emit('userLeft', user);		
 	});
 
 	client.on('updateUsers', function(users){
 		client.emit('updateUsers', users);
 		client.broadcast.to(users[0].lobby).emit('updateUsers', users);
 	});
+
+	client.on('disconnect', function(){
+		console.log(client.rooms);
+	});
 });
+
 

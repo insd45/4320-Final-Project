@@ -31,6 +31,11 @@ $(document).ready( function(){
 	});
 
 	socket.on('userJoined', function(newUser){
+		
+		if(user.username == newUser.username){
+			user = newUser;
+		}
+		
 		//host holds the master list of users
 		if(user.isHost){
 			console.log("Host emitted user array");
@@ -44,18 +49,25 @@ $(document).ready( function(){
 	socket.on('updateUsers', function(userList){
 		users = userList;
 		console.log("Users recieved data from host");
-		$('#numPlayers').html(users.length);
-		
-		$('#userList').empty();
-		for(var i = 0; i < users.length; i++){
-			if(users[i].isHost){
-				$('#userList').append("<li class='list-group-item' style='font-weight: bold;'>"+ users[i].username +"</li>");
-			} else{
-				$('#userList').append("<li class='list-group-item'>"+ users[i].username +"</li>");
-			}
-		}
-
+		updateLobby();
 		console.log(users);
+	});
+
+	socket.on('userLeft', function(leavingUser){
+		//host holds the master list of users
+		if(user.isHost){
+			console.log("Host emitted user array");
+			for(var i = 0; i < users.length; i++){
+				if(user[i].username = leavingUser.username){
+					users.splice(i,1);
+					break;
+				}
+			}
+			
+			socket.emit('updateUsers', users);
+		} else {
+			console.log("user update ended");
+		}
 	});
 });
 
@@ -76,6 +88,19 @@ function createUser(host){
 function joinGame(code){
 	$('#startPage').hide();
 	$('#lobbyScreen').show();
+}
+
+function updateLobby(){
+	$('#numPlayers').html(users.length);
+	$('#userList').empty();
+	console.log(user);
+	for(var i = 0; i < users.length; i++){
+		if(users[i].clientId == user.clientId){
+			$('#userList').append("<li class='list-group-item' style='font-weight: bold;'>"+ users[i].username +"</li>");
+		} else{
+			$('#userList').append("<li class='list-group-item'>"+ users[i].username +"</li>");
+		}
+	}
 }
 
 
