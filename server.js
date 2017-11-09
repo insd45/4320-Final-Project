@@ -53,11 +53,18 @@ io.on('connection', function(client) {
 		var room = user.lobby;
 		var username = user.username;
 		room = room.toUpperCase();
-		console.log(username + " joining lobby " + room);
-		client.join(room);
-		console.log(client.rooms);
-		client.emit('userJoined', user);
-		client.broadcast.to(room).emit('userJoined', user);
+
+		if( io.sockets.adapter.rooms[room].length != null ){
+			if(io.sockets.adapter.rooms[room].length < 10){
+				console.log(username + " joining lobby " + room);
+				client.join(room);
+				console.log(client.rooms);
+				client.emit('userJoined', user);
+				client.broadcast.to(room).emit('userJoined', user);
+			} else {
+				client.emit('kicked');
+			}
+		} 
 	});
 
 	client.on('leaveGame', function(user){

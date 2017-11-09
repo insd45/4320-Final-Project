@@ -36,7 +36,7 @@ $(document).ready( function(){
 			user = newUser;
 		}
 		
-		//host holds the master list of users
+		//host holds the master list of users, clients sync from host
 		if(user.isHost){
 			console.log("Host emitted user array");
 			users.push(newUser);
@@ -53,27 +53,14 @@ $(document).ready( function(){
 		console.log(users);
 	});
 
-	socket.on('userLeft', function(leavingUser){
-		//host holds the master list of users
-		if(user.isHost){
-			console.log("Host emitted user array");
-			for(var i = 0; i < users.length; i++){
-				if(user[i].username = leavingUser.username){
-					users.splice(i,1);
-					break;
-				}
-			}
-			
-			socket.emit('updateUsers', users);
-		} else {
-			console.log("user update ended");
-		}
+	socket.on('kicked', function(){
+		console.log("You have been kicked - too many players");
 	});
 });
 
-$(window).on('beforeunload', function(){
-	socket.emit('leaveGame', user);
-});
+// $(window).on('beforeunload', function(){
+// 	socket.emit('leaveGame', user);
+// });
 
 function createUser(host){
 	var username = $('#username').val();
@@ -96,7 +83,7 @@ function updateLobby(){
 	console.log(user);
 	for(var i = 0; i < users.length; i++){
 		if(users[i].clientId == user.clientId){
-			$('#userList').append("<li class='list-group-item' style='font-weight: bold;'>"+ users[i].username +"</li>");
+			$('#userList').append("<li class='list-group-item list-group-item-success'>"+ users[i].username +"</li>");
 		} else{
 			$('#userList').append("<li class='list-group-item'>"+ users[i].username +"</li>");
 		}
