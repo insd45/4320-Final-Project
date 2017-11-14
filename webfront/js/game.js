@@ -1,17 +1,22 @@
-//gameplay object
-
+//user object
 function User(){
     var username = "";
     var lobby = "";
     var clientId = "";
+    var clientVerificationId = "";
     var isHost;
-    var hostClientId = "";
+    
+    //game specific 
+    var alignment = "";
+    var role = "";
 }
 
-User.prototype = {
+// User.prototype = {
 
-}
+// }
 
+
+//gameplay object
 function Game(){
     var players = [];
 }

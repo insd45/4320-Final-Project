@@ -5,40 +5,44 @@ var game;
 
 $(document).ready( function(){
 	
+	//Interface Interaction
 	$('#joinButton').click( function(){		
 		createUser(false);
 		socket.emit('joinGame', user);
-		joinGame();
-		
+		displayLobby();
 	});
 
 	$('#hostButton').click( function(){
 		createUser(true);
-		//users.push(user);
 		socket.emit('hostGame', user);
-		joinGame();
+		displayLobby();
 	});
 
-	socket.on('sync', function(conn){
-		console.log("synced from server");
-		$('#numPlayers').html(conn);
-	});
-
+	//socket events
 	socket.on('hostCode', function(code){
 		user.lobby = code;
 		$('#lobbyCode').html(code);
 		$('#lobbyDisplay').show();
+		$('#startButton').show();
 	});
 
 	socket.on('userJoined', function(newUser){
 		
-		if(user.username == newUser.username){
+		if(user.clientVerificationId == newUser.clientVerificationId){
 			user = newUser;
 		}
 		
 		//host holds the master list of users, clients sync from host
 		if(user.isHost){
 			console.log("Host emitted user array");
+
+			for(var i = 0; i < users.length; i++){
+				if(newUser.username == users[i].username){
+					socket.emit("kickUser", newUser, "Username already in use");
+					return;
+				}
+			}
+
 			users.push(newUser);
 			socket.emit('updateUsers', users);
 		} else {
@@ -53,26 +57,41 @@ $(document).ready( function(){
 		console.log(users);
 	});
 
-	socket.on('kicked', function(){
-		console.log("You have been kicked - too many players");
+	socket.on('connectError', function(message){
+		console.log(message);
+		errorScreen(message);
+	});
+
+	socket.on('leaveGame', function(){
+		socket.emit("leaveGame", user);
 	});
 });
 
-// $(window).on('beforeunload', function(){
-// 	socket.emit('leaveGame', user);
+// $(window).on("beforeunload", function() {
+// 	return "WARNING: about to leave game!";
 // });
 
-function createUser(host){
+function createUser(isHost){
 	var username = $('#username').val();
-	var lobbyCode = $('#roomCode').val();
 	
-	user.isHost = host;
+	user.isHost = isHost;
 	user.username = username;
-	user.lobby = lobbyCode;
+	
+	if(!isHost){
+		user.lobby = $('#roomCode').val();
+	}
+    
+	user.clientVerificationId = generateId(9);
 	console.log(user);
 }
 
-function joinGame(code){
+function errorScreen(message){
+	$('.gamePage').hide();
+	$('#errorScreen').show();
+	$('#errorMessage').html(message);
+}
+
+function displayLobby(){
 	$('#startPage').hide();
 	$('#lobbyScreen').show();
 }
@@ -81,6 +100,10 @@ function updateLobby(){
 	$('#numPlayers').html(users.length);
 	$('#userList').empty();
 	console.log(user);
+	if(users.length >= 5 && user.isHost){
+		$('#startButton').prop('disabled', false);
+	}
+
 	for(var i = 0; i < users.length; i++){
 		if(users[i].clientId == user.clientId){
 			$('#userList').append("<li class='list-group-item list-group-item-success'>"+ users[i].username +"</li>");
@@ -88,6 +111,20 @@ function updateLobby(){
 			$('#userList').append("<li class='list-group-item'>"+ users[i].username +"</li>");
 		}
 	}
+}
+
+function generateId(length){
+	var uid = "";
+
+	function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+	}
+	
+	for(var i = 0; i < length; i++){
+		uid += s4();
+	}
+	
+	return uid;
 }
 
 
