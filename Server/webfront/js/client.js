@@ -20,7 +20,7 @@ $(document).ready( function(){
 
 	//socket events
 	socket.on('hostCode', function(code){
-		user.lobby = code;
+		user.room = code;
 		$('#lobbyCode').html(code);
 		$('#lobbyDisplay').show();
 		$('#startButton').show();
@@ -78,7 +78,7 @@ function createUser(isHost){
 	user.username = username;
 	
 	if(!isHost){
-		user.lobby = $('#roomCode').val();
+		user.room = $('#roomCode').val();
 	}
     
 	user.clientVerificationId = generateId(4);

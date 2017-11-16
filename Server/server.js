@@ -20,8 +20,7 @@ io.on('connection', function(client) {
 	console.log('User connected');
 
 	client.on('hostGame', function(user){
-		console.log("Host with IP : "+ (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress) + " has started a lobby");
-		//console.log("Host has started a lobby");
+		console.log("Host has started a room");
 		console.log(client.id);
 		console.log(user);
 
@@ -30,41 +29,43 @@ io.on('connection', function(client) {
 		room = room.substring(0,5);
 		room = room.toUpperCase();
 
-		//user.clientIpAddr = (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress);
+		//set user data
 		user.clientId = client.id;
-		user.lobby = room;
+		user.room = room;
+		client.user = user;
 
-		console.log("Host lobby code is " + room);
+		console.log("Host room code is " + room);
 		client.join(room);
 		client.emit('hostCode', room);
 		client.emit('userJoined', user);
 	});
 
 	client.on('joinGame', function(user){
-		console.log("User with IP : "+ (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress) + " has joined the Game");
+		console.log("User has joined the Game");
 		
-		var room = user.lobby;
+		var room = user.room;
 		var username = user.username;
 
-		//user.clientIpAddr = (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress);		
+		//set user data
 		user.clientId = client.id;
+		client.user = user;
 		
 		//makes room codes non-case sensitive
 		room = room.toUpperCase();
 
-		//kick if lobby is full/doesn't exist
+		//kick if room is full/doesn't exist
 		if( io.sockets.adapter.rooms[room] != null ){
 			if(io.sockets.adapter.rooms[room].length < MAX_PLAYERS){
-				console.log(username + " joining lobby " + room);
+				console.log(username + " joining room " + room);
 				client.join(room);
 				console.log(client.rooms);
 				client.emit('userJoined', user);
 				client.broadcast.to(room).emit('userJoined', user);
 			} else {
-				client.emit('connectError', "Lobby is full");
+				client.emit('connectError', "room is full");
 			}
 		} else {
-			client.emit('connectError', "Lobby doesn't exist");
+			client.emit('connectError', "room doesn't exist");
 		}
 	});
 
@@ -72,12 +73,12 @@ io.on('connection', function(client) {
 
 	client.on('updateUsers', function(users){
 		client.emit('updateUsers', users);
-		client.broadcast.to(users[0].lobby).emit('updateUsers', users);
+		client.broadcast.to(users[0].room).emit('updateUsers', users);
 	});
 
 	client.on('renameUser', function(user){
 		client.emit('userJoined', user);
-		client.broadcast.to(user.lobby).emit('userJoined', user);
+		client.broadcast.to(user.room).emit('userJoined', user);
 		console.log("RENAMING USER");
 	});
 
@@ -87,11 +88,11 @@ io.on('connection', function(client) {
 	});
 
 	client.on('leaveGame', function(user){
-		client.leave(user.lobby);		
+		client.leave(user.room);		
 	});
 
 	client.on('disconnect', function(){
-		console.log(client.id + " Disconnected");
+		console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
 	});
 });
 

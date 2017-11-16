@@ -1,7 +1,7 @@
 //user object
 function User(){
     var username = "";
-    var lobby = "";
+    var room = "";
     var clientId = "";
     var clientVerificationId = "";
     var clientIpAddr = "";
