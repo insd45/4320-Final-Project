@@ -4,6 +4,7 @@ function User(){
     var lobby = "";
     var clientId = "";
     var clientVerificationId = "";
+    var clientIpAddr = "";
     var isHost;
     
     //game specific 

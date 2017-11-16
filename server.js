@@ -20,15 +20,17 @@ io.on('connection', function(client) {
 	console.log('User connected');
 
 	client.on('hostGame', function(user){
-		console.log("Host has started a lobby");
+		console.log("Host with IP : "+ (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress) + " has started a lobby");
+		//console.log("Host has started a lobby");
 		console.log(client.id);
 		console.log(user);
 
 		//generate room code
-		var room = client.id;
-		room = room.substring(0,6);
+		var room = user.clientVerificationId;
+		room = room.substring(0,5);
 		room = room.toUpperCase();
 
+		//user.clientIpAddr = (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress);
 		user.clientId = client.id;
 		user.lobby = room;
 
@@ -39,10 +41,15 @@ io.on('connection', function(client) {
 	});
 
 	client.on('joinGame', function(user){
-		console.log("User has joined the Game");
-		user.clientId = client.id;
+		console.log("User with IP : "+ (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress) + " has joined the Game");
+		
 		var room = user.lobby;
 		var username = user.username;
+
+		//user.clientIpAddr = (client.request.headers['x-forwarded-for'] || client.request.connection.remoteAddress);		
+		user.clientId = client.id;
+		
+		//makes room codes non-case sensitive
 		room = room.toUpperCase();
 
 		//kick if lobby is full/doesn't exist

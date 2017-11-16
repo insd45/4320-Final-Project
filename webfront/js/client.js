@@ -81,7 +81,7 @@ function createUser(isHost){
 		user.lobby = $('#roomCode').val();
 	}
     
-	user.clientVerificationId = generateId(9);
+	user.clientVerificationId = generateId(4);
 	console.log(user);
 }
 
@@ -117,7 +117,7 @@ function generateId(length){
 	var uid = "";
 
 	function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+		return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 	}
 	
 	for(var i = 0; i < length; i++){
