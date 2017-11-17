@@ -1,13 +1,15 @@
 //user object
 function User(){
+    //user properties
     var username = "";
     var room = "";
     var clientId = "";
     var clientVerificationId = "";
     var clientIpAddr = "";
-    var isHost;
+    var isHost = false;
+    var hostCliendId = "";
     
-    //game specific 
+    //game specific properties
     var alignment = "";
     var role = "";
 }
@@ -20,6 +22,7 @@ function User(){
 //gameplay object
 function Game(){
     var players = [];
+    var missionNumber;
 }
 
 Game.prototype = {

@@ -33,34 +33,51 @@ io.on('connection', function(client) {
 		user.clientId = client.id;
 		user.room = room;
 		client.user = user;
-
+		
 		console.log("Host room code is " + room);
 		client.join(room);
 		client.emit('hostCode', room);
 		client.emit('userJoined', user);
+
+		io.sockets.adapter.rooms[user.room].host = user;
 	});
 
 	client.on('joinGame', function(user){
 		console.log("User has joined the Game");
-		
-		var room = user.room;
+
 		var username = user.username;
 
 		//set user data
 		user.clientId = client.id;
 		client.user = user;
-		
 		//makes room codes non-case sensitive
-		room = room.toUpperCase();
+		user.room = user.room.toUpperCase();
+		
 
 		//kick if room is full/doesn't exist
-		if( io.sockets.adapter.rooms[room] != null ){
-			if(io.sockets.adapter.rooms[room].length < MAX_PLAYERS){
-				console.log(username + " joining room " + room);
-				client.join(room);
-				console.log(client.rooms);
-				client.emit('userJoined', user);
-				client.broadcast.to(room).emit('userJoined', user);
+		if( io.sockets.adapter.rooms[user.room] != null ){
+			if(io.sockets.adapter.rooms[user.room].length < MAX_PLAYERS){
+				
+				//allows user to get a full list of currently connected clients, with user objects
+				console.log(io.sockets.adapter.rooms[user.room].sockets);
+				var sockets_in_room = io.sockets.adapter.rooms[user.room].sockets;
+				var socket_objects = [];
+				
+				for (socketId in sockets_in_room) {
+					socket_objects.push(io.sockets.connected[socketId].user);
+				}
+
+				console.log("CLIENT VIEWING HOST ");
+				console.log(io.sockets.adapter.rooms[user.room].host);
+
+				console.log(socket_objects);
+
+
+				console.log(username + " joining room " + user.room);
+				client.join(user.room);
+				//console.log(client.rooms);
+				//client.emit('userJoined', user);
+				client.in(user.room).emit('userJoined', user);
 			} else {
 				client.emit('connectError', "room is full");
 			}

@@ -1,7 +1,7 @@
 {
   "name": "The-Resistance",
   "version": "1.0.0",
-  "description": "",
+  "description": "An online version of the resistance game",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

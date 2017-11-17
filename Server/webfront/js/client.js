@@ -71,17 +71,18 @@ $(document).ready( function(){
 // 	return "WARNING: about to leave game!";
 // });
 
+//Create a new user
 function createUser(isHost){
 	var username = $('#username').val();
 	
 	user.isHost = isHost;
 	user.username = username;
+	user.clientVerificationId = generateId(4);
 	
 	if(!isHost){
 		user.room = $('#roomCode').val();
 	}
-    
-	user.clientVerificationId = generateId(4);
+
 	console.log(user);
 }
 
@@ -115,15 +116,8 @@ function updateLobby(){
 
 function generateId(length){
 	var uid = "";
-
-	function s4() {
-		return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-	}
-	
-	for(var i = 0; i < length; i++){
-		uid += s4();
-	}
-	
+	function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
+	for(var i = 0; i < length; i++){ uid += s4(); }
 	return uid;
 }
 
