@@ -93,8 +93,9 @@ function errorScreen(message){
 }
 
 function displayLobby(){
-	$('#startPage').hide();
-	$('#lobbyScreen').show();
+	$('#startScreen').fadeOut(function(){
+		$('#lobbyScreen').fadeIn();	
+	});
 }
 
 function updateLobby(){

@@ -1,0 +1,55 @@
+* OLD
+Player disconnected
+- cant update this information to the players
+- but, can handle reconnects - host will resync their player data
+- host cannot dissconnect, otherwise the game is over (they hold the master game data)
+
+* NEW
+Client data on server
+- have the ability to store data on an instance of a room 
+    * Note: Only after a host has created it, accessing members before host creation results in server failure
+    * this can be used to store host id/data on instances of a room, so that clients will know who to send data to
+- when a client connects, socket io creates a client object
+    - initially this object only has one item, an id, but due to the ability to add properties to any object, we can 
+    save a full user state here
+        * CONSIDERATIONS:
+            - extra data storage by server - this could be remedieid by destroying all clients at the conclusion of a game
+- This completely changes the architecture
+    - clients can now be identified on server even on disconnetion 
+
+
+With this, we can build a new architecture ( * on client side, - on server side)
+
+For Lobby phase
+- Host creates a room with the host button, needing only username input
+    * user object sent up to server with a host joined function
+    - server adds user object as property to client object
+    - server generates a room code
+    - host is joined to this room code 
+    - server logs their host id on the room
+    - server sends back down user object with server clientId
+    * host resets their user object with sent user object
+    * host creates master game object, putting their object in a user list
+    * game object sent to generateView() function (or possibly object, tbd), which handles all view updating based on a game object
+
+- User joins a game with the host code, needing both room code and username input
+    * user object sent up to server with a user joined function
+    - server checks room to see if exists or full, if either fail, send error message to client
+    - server adds user object as property to client object
+    - user joined to room 
+    - user can now pull host id stored on the room object
+    - server emits user object directly to host
+
+- Server sent the host a new user object
+    * host recieved a user object, with an event 'userJoinedRoom'  (at this point new user has passed through room checks, so they are good to be added to room)
+    * host adds this new user to list of users in master game object
+    * host sends up master game object to server
+    - server emits to all users in room the updated master game object
+
+- User recieved a new master game object
+    * if user is not the host, overwrite pre-existing game object
+    * pass updated game object into the generateView() function (or object)
+
+
+
+

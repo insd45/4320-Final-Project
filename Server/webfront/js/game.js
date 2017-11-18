@@ -23,6 +23,7 @@ function User(){
 function Game(){
     var players = [];
     var missionNumber;
+    var phase;
 }
 
 Game.prototype = {

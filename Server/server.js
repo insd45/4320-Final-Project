@@ -1,3 +1,4 @@
+
 const MAX_PLAYERS = 10;
 
 var express = require('express');
@@ -44,19 +45,16 @@ io.on('connection', function(client) {
 
 	client.on('joinGame', function(user){
 		console.log("User has joined the Game");
-
-		var username = user.username;
-
-		//set user data
-		user.clientId = client.id;
-		client.user = user;
-		//makes room codes non-case sensitive
 		user.room = user.room.toUpperCase();
 		
-
 		//kick if room is full/doesn't exist
 		if( io.sockets.adapter.rooms[user.room] != null ){
 			if(io.sockets.adapter.rooms[user.room].length < MAX_PLAYERS){
+
+				//set user data
+				user.clientId = client.id;
+				client.user = user;
+				//makes room codes non-case sensitive
 				
 				//allows user to get a full list of currently connected clients, with user objects
 				console.log(io.sockets.adapter.rooms[user.room].sockets);
@@ -67,13 +65,14 @@ io.on('connection', function(client) {
 					socket_objects.push(io.sockets.connected[socketId].user);
 				}
 
+				//allows user to access previously stored host data
 				console.log("CLIENT VIEWING HOST ");
 				console.log(io.sockets.adapter.rooms[user.room].host);
 
 				console.log(socket_objects);
 
 
-				console.log(username + " joining room " + user.room);
+				console.log(user.username + " joining room " + user.room);
 				client.join(user.room);
 				//console.log(client.rooms);
 				//client.emit('userJoined', user);
