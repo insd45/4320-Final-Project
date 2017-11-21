@@ -1,12 +1,12 @@
 //user object
 function User(){
     //user properties
+    var isHost = "";
     var username = "";
     var room = "";
     var clientId = "";
     var clientVerificationId = "";
     var clientIpAddr = "";
-    var isHost = false;
     var hostCliendId = "";
     
     //game specific properties
@@ -20,10 +20,10 @@ function User(){
 
 
 //gameplay object
-function Game(){
-    var players = [];
-    var missionNumber;
-    var phase;
+function Game(host){
+    var users = [host];
+    var missionNumber = 1;
+    var screen = "lobbyScreen";
 }
 
 Game.prototype = {

@@ -1,118 +1,142 @@
 var socket = io();
-var user = new User();
-var users = [];
-var game;
+const MIN_PLAYERS = 5;
+var clientUser;
+var clientGame;
 
 $(document).ready( function(){
 	
-	//Interface Interaction
+	//user interaction
 	$('#joinButton').click( function(){		
 		createUser(false);
-		socket.emit('joinGame', user);
-		displayLobby();
+		socket.emit('joinGame', clientUser);
 	});
 
+	//host interaction
 	$('#hostButton').click( function(){
 		createUser(true);
-		socket.emit('hostGame', user);
-		displayLobby();
+		socket.emit('hostGame', clientUser);
 	});
+
+	//host events
+	socket.on('hostSetup', function(user){
+		console.log("Made it to host setup");
+		clientUser = user;
+		clientGame = new Game(clientUser);
+		generateView();
+	});
+
 
 	//socket events
-	socket.on('hostCode', function(code){
-		user.room = code;
-		$('#lobbyCode').html(code);
-		$('#lobbyDisplay').show();
-		$('#startButton').show();
-	});
+// 	socket.on('hostCode', function(code){
+// 		user.room = code;
+// 		$('#lobbyCode').html(code);
+// 		$('#lobbyDisplay').show();
+// 		$('#startButton').show();
+// 	});
 
-	socket.on('userJoined', function(newUser){
+// 	socket.on('userJoined', function(newUser){
 		
-		if(user.clientVerificationId == newUser.clientVerificationId){
-			user = newUser;
-		}
+// 		if(user.clientVerificationId == newUser.clientVerificationId){
+// 			user = newUser;
+// 		}
 		
-		//host holds the master list of users, clients sync from host
-		if(user.isHost){
-			console.log("Host emitted user array");
+// 		//host holds the master list of users, clients sync from host
+// 		if(user.isHost){
+// 			console.log("Host emitted user array");
 
-			for(var i = 0; i < users.length; i++){
-				if(newUser.username == users[i].username){
-					socket.emit("kickUser", newUser, "Username already in use");
-					return;
-				}
-			}
+// 			for(var i = 0; i < users.length; i++){
+// 				if(newUser.username == users[i].username){
+// 					socket.emit("kickUser", newUser, "Username already in use");
+// 					return;
+// 				}
+// 			}
 
-			users.push(newUser);
-			socket.emit('updateUsers', users);
-		} else {
-			console.log("user update ended");
-		}
-	});
+// 			users.push(newUser);
+// 			socket.emit('updateUsers', users);
+// 		} else {
+// 			console.log("user update ended");
+// 		}
+// 	});
 
-	socket.on('updateUsers', function(userList){
-		users = userList;
-		console.log("Users recieved data from host");
-		updateLobby();
-		console.log(users);
-	});
+// 	socket.on('updateUsers', function(userList){
+// 		users = userList;
+// 		console.log("Users recieved data from host");
+// 		updateLobby();
+// 		console.log(users);
+// 	});
 
-	socket.on('connectError', function(message){
-		console.log(message);
-		errorScreen(message);
-	});
+// 	socket.on('connectError', function(message){
+// 		console.log(message);
+// 		errorScreen(message);
+// 	});
 
-	socket.on('leaveGame', function(){
-		socket.emit("leaveGame", user);
-	});
+// 	socket.on('leaveGame', function(){
+// 		socket.emit("leaveGame", user);
+// 	});
 });
 
-// $(window).on("beforeunload", function() {
-// 	return "WARNING: about to leave game!";
-// });
+
 
 //Create a new user
 function createUser(isHost){
+	clientUser = new User();
 	var username = $('#username').val();
 	
-	user.isHost = isHost;
-	user.username = username;
-	user.clientVerificationId = generateId(4);
+	clientUser.isHost = isHost;
+	clientUser.username = username;
+	clientUser.clientVerificationId = generateId(4);
 	
 	if(!isHost){
-		user.room = $('#roomCode').val();
+		clientUser.room = $('#roomCode').val();
 	}
-
-	console.log(user);
 }
 
-function errorScreen(message){
-	$('.gamePage').hide();
-	$('#errorScreen').show();
-	$('#errorMessage').html(message);
+
+
+
+// View Handling
+function generateView(){
+	switch(clientGame.screen){
+		case 'lobbyScreen':
+			updateLobby();
+			transitionScreens('#lobbyScreen');
+			break;
+		default:
+	}
 }
 
-function displayLobby(){
-	$('#startScreen').fadeOut(function(){
-		$('#lobbyScreen').fadeIn();	
+//handles all screen transitions
+function transitionScreens(nextScreen){
+	console.log("transitioned screens");
+	$('.gameScreen:visible').hide(function(){
+		$(nextScreen).show();
 	});
 }
 
 function updateLobby(){
-	$('#numPlayers').html(users.length);
-	$('#userList').empty();
-	console.log(user);
-	if(users.length >= 5 && user.isHost){
-		$('#startButton').prop('disabled', false);
+	var $startButton = $('#startButton');
+
+	$('#numPlayers').html(clientGame.users.length);
+
+	if(clientUser.isHost){
+		$startButton.show();
 	}
 
+	if(clientGame.users.length >= MIN_PLAYERS && clientUser.isHost){
+		$startButton.prop('disabled', false);
+	}
+
+	var lobbyContent = "";
+
 	for(var i = 0; i < users.length; i++){
-		if(users[i].clientId == user.clientId){
-			$('#userList').append("<li class='list-group-item list-group-item-success'>"+ users[i].username +"</li>");
+		if(clientGame.users[i].clientId == clientUser.clientId){
+			lobbyContent += "<li class='list-group-item list-group-item-success'>"+ users[i].username +"</li>";
 		} else{
-			$('#userList').append("<li class='list-group-item'>"+ users[i].username +"</li>");
+			lobbyContent += "<li class='list-group-item'>"+ users[i].username +"</li>";
 		}
 	}
+
+	$('#userList').html(lobbyContent);
 }
 
 function generateId(length){
@@ -121,6 +145,19 @@ function generateId(length){
 	for(var i = 0; i < length; i++){ uid += s4(); }
 	return uid;
 }
+
+
+// function errorScreen(message){
+// 	$('.gamePage').hide();
+// 	$('#errorScreen').show();
+// 	$('#errorMessage').html(message);
+// }
+
+
+
+
+
+
 
 
 

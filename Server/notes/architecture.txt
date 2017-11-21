@@ -17,6 +17,8 @@ Client data on server
 - This completely changes the architecture
     - clients can now be identified on server even on disconnetion 
 
+    
+
 
 With this, we can build a new architecture ( * on client side, - on server side)
 
