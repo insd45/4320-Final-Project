@@ -20,6 +20,7 @@ var io = require('socket.io')(server);
 io.on('connection', function(client) {
 	// console.log('User connected');
 
+	//host setup
 	client.on('hostGame', function(user){
 		console.log("Host has started a room");
 		console.log(user);
@@ -36,50 +37,41 @@ io.on('connection', function(client) {
 		client.join(user.room);
 		//add the hosts user object to the room
 		io.sockets.adapter.rooms[user.room].host = user;
+		io.sockets.adapter.rooms[user.room].usernames.push(user.username);
 		client.emit('hostSetup', user);
 	});
 
-	// client.on('joinGame', function(user){
-	// 	console.log("User has joined the Game");
-	// 	user.room = user.room.toUpperCase();
+	//User setup
+	client.on('joinGame', function(user){
+		console.log("User has joined the Game");
+		user.room = user.room.toUpperCase();
 		
-	// 	//kick if room is full/doesn't exist
-	// 	if( io.sockets.adapter.rooms[user.room] != null ){
-	// 		if(io.sockets.adapter.rooms[user.room].length < MAX_PLAYERS){
+		//kick if room is full/doesn't exist
+		if( io.sockets.adapter.rooms[user.room] == null ){
+			client.emit('connectError', "room doesn't exist");
+		} else if(io.sockets.adapter.rooms[user.room].length == MAX_PLAYERS){
+			client.emit('connectError', "room is full");
+		} else if ( io.sockets.adapter.rooms[user.room].usernames.indexOf(user.username) >= 0) {
+			client.emit('connectError', "username already taken");
+		} else {
+			//pull host id off room
+			var host = io.sockets.adapter.rooms[user.room].host.clientId;
 
-	// 			//set user data
-	// 			user.clientId = client.id;
-	// 			client.user = user;
-	// 			//makes room codes non-case sensitive
-				
-	// 			//allows user to get a full list of currently connected clients, with user objects
-	// 			console.log(io.sockets.adapter.rooms[user.room].sockets);
-	// 			var sockets_in_room = io.sockets.adapter.rooms[user.room].sockets;
-	// 			var socket_objects = [];
-				
-	// 			for (socketId in sockets_in_room) {
-	// 				socket_objects.push(io.sockets.connected[socketId].user);
-	// 			}
+			//set user data
+			user.clientId = client.id;
+			client.user = user;
 
-	// 			//allows user to access previously stored host data
-	// 			console.log("CLIENT VIEWING HOST ");
-	// 			console.log(io.sockets.adapter.rooms[user.room].host);
+			console.log(user.username + " joining room " + user.room);
+			client.join(user.room);
 
-	// 			console.log(socket_objects);
+			client.emit('userJoined', user);
+			client.to(host).emit('userJoined', user);
+		}
+	});
 
-
-	// 			console.log(user.username + " joining room " + user.room);
-	// 			client.join(user.room);
-	// 			//console.log(client.rooms);
-	// 			//client.emit('userJoined', user);
-	// 			client.in(user.room).emit('userJoined', user);
-	// 		} else {
-	// 			client.emit('connectError', "room is full");
-	// 		}
-	// 	} else {
-	// 		client.emit('connectError', "room doesn't exist");
-	// 	}
-	// });
+	client.on('syncMasterGamestate', function(game){
+		client.to(client.user.room).emit('syncGamestate', game);
+	});
 
 	
 

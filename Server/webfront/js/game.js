@@ -1,17 +1,16 @@
 //user object
 function User(){
     //user properties
-    var isHost = "";
-    var username = "";
-    var room = "";
-    var clientId = "";
-    var clientVerificationId = "";
-    var clientIpAddr = "";
-    var hostCliendId = "";
+    this.isHost = "";
+    this.username = "";
+    this.room = "";
+    this.clientId = "";
+    this.clientVerificationId = "";
+    this.hostCliendId = "";
     
     //game specific properties
-    var alignment = "";
-    var role = "";
+    this.alignment = "";
+    this.role = "";
 }
 
 // User.prototype = {
@@ -21,9 +20,9 @@ function User(){
 
 //gameplay object
 function Game(host){
-    var users = [host];
-    var missionNumber = 1;
-    var screen = "lobbyScreen";
+    this.users = [host];
+    this.missionNumber = 1;
+    this.screen = "lobbyScreen";
 }
 
 Game.prototype = {

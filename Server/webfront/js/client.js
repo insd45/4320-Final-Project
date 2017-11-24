@@ -17,12 +17,46 @@ $(document).ready( function(){
 		socket.emit('hostGame', clientUser);
 	});
 
-	//host events
+	//socket events
+
+	socket.on('connectError', function(message){
+		console.log(message);
+		errorScreen(message);
+	});
+
+	socket.on('syncGamestate', function(game){
+		clientGame = game;
+		generateView();
+	});
+
+
+	//host specific events
+
 	socket.on('hostSetup', function(user){
 		console.log("Made it to host setup");
 		clientUser = user;
 		clientGame = new Game(clientUser);
+		console.log(clientUser);
 		generateView();
+	});
+
+
+	socket.on('userJoined', function(user){
+		//client recieves completed user object
+		if(clientUser.clientVerificationId == clientUser.clientVerificationId){
+			clientUser = user;
+		}
+		
+		//host holds the master list of users, clients sync from host
+		if(clientUser.isHost){
+			//add new user to master gamestate held by host, sync to all clients
+			clientGame.push(user);
+			socket.emit('syncMasterGamestate', clientGame);
+			generateView();
+			console.log("Host emitted user array");
+		} else {
+			console.log("user update ended");
+		}
 	});
 
 
@@ -34,29 +68,7 @@ $(document).ready( function(){
 // 		$('#startButton').show();
 // 	});
 
-// 	socket.on('userJoined', function(newUser){
-		
-// 		if(user.clientVerificationId == newUser.clientVerificationId){
-// 			user = newUser;
-// 		}
-		
-// 		//host holds the master list of users, clients sync from host
-// 		if(user.isHost){
-// 			console.log("Host emitted user array");
 
-// 			for(var i = 0; i < users.length; i++){
-// 				if(newUser.username == users[i].username){
-// 					socket.emit("kickUser", newUser, "Username already in use");
-// 					return;
-// 				}
-// 			}
-
-// 			users.push(newUser);
-// 			socket.emit('updateUsers', users);
-// 		} else {
-// 			console.log("user update ended");
-// 		}
-// 	});
 
 // 	socket.on('updateUsers', function(userList){
 // 		users = userList;
@@ -65,10 +77,7 @@ $(document).ready( function(){
 // 		console.log(users);
 // 	});
 
-// 	socket.on('connectError', function(message){
-// 		console.log(message);
-// 		errorScreen(message);
-// 	});
+
 
 // 	socket.on('leaveGame', function(){
 // 		socket.emit("leaveGame", user);
@@ -108,9 +117,8 @@ function generateView(){
 //handles all screen transitions
 function transitionScreens(nextScreen){
 	console.log("transitioned screens");
-	$('.gameScreen:visible').hide(function(){
-		$(nextScreen).show();
-	});
+	$('.gameScreen').hide();
+	$(nextScreen).show();
 }
 
 function updateLobby(){
@@ -120,6 +128,8 @@ function updateLobby(){
 
 	if(clientUser.isHost){
 		$startButton.show();
+		$('#lobbyCode').html(clientUser.room);
+		$('#lobbyDisplay').show();
 	}
 
 	if(clientGame.users.length >= MIN_PLAYERS && clientUser.isHost){
@@ -128,11 +138,11 @@ function updateLobby(){
 
 	var lobbyContent = "";
 
-	for(var i = 0; i < users.length; i++){
+	for(var i = 0; i < clientGame.users.length; i++){
 		if(clientGame.users[i].clientId == clientUser.clientId){
-			lobbyContent += "<li class='list-group-item list-group-item-success'>"+ users[i].username +"</li>";
+			lobbyContent += "<li class='list-group-item list-group-item-success'>"+ clientGame.users[i].username +"</li>";
 		} else{
-			lobbyContent += "<li class='list-group-item'>"+ users[i].username +"</li>";
+			lobbyContent += "<li class='list-group-item'>"+ clientGame.users[i].username +"</li>";
 		}
 	}
 
@@ -146,12 +156,11 @@ function generateId(length){
 	return uid;
 }
 
-
-// function errorScreen(message){
-// 	$('.gamePage').hide();
-// 	$('#errorScreen').show();
-// 	$('#errorMessage').html(message);
-// }
+function errorScreen(message){
+	$('.gamePage').hide();
+	$('#errorScreen').show();
+	$('#errorMessage').html(message);
+}
 
 
 

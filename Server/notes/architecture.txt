@@ -40,7 +40,7 @@ For Lobby phase
     - server adds user object as property to client object
     - user joined to room 
     - user can now pull host id stored on the room object
-    - server emits user object directly to host
+    - server emits user object directly to host and user, user updates their user object, and host emits current gamestate
 
 - Server sent the host a new user object
     * host recieved a user object, with an event 'userJoinedRoom'  (at this point new user has passed through room checks, so they are good to be added to room)
