@@ -26,6 +26,7 @@ $(document).ready( function(){
 
 	socket.on('syncGamestate', function(game){
 		clientGame = game;
+		console.log("Syncing Gamestate")
 		generateView();
 	});
 
@@ -42,46 +43,38 @@ $(document).ready( function(){
 
 
 	socket.on('userJoined', function(user){
+		console.log(user.username + "Joined, userJoined event");
 		//client recieves completed user object
-		if(clientUser.clientVerificationId == clientUser.clientVerificationId){
+		if(clientUser.clientVerificationId == user.clientVerificationId){
 			clientUser = user;
 		}
 		
 		//host holds the master list of users, clients sync from host
 		if(clientUser.isHost){
 			//add new user to master gamestate held by host, sync to all clients
-			clientGame.push(user);
+			clientGame.users.push(user);
 			socket.emit('syncMasterGamestate', clientGame);
 			generateView();
 			console.log("Host emitted user array");
 		} else {
-			console.log("user update ended");
+			console.log("user update ended\n USER OBJECT: ");
+			console.log(clientUser);
 		}
 	});
 
+	socket.on('userLeft', function(user){
+		console.log(user.username + ' Left the game');
+		var index = clientGame.users.findIndex(i => i.clientId == user.clientId);
+		
+		var leftUser = clientGame.users.splice(index,1);
+		if(clientGame.screen != 'lobbyScreen'){
+			clientGame.disconnectedUsers.push(leftUser);
+		}
+		
+		socket.emit('syncMasterGamestate', clientGame);
+		generateView();
+	});
 
-	//socket events
-// 	socket.on('hostCode', function(code){
-// 		user.room = code;
-// 		$('#lobbyCode').html(code);
-// 		$('#lobbyDisplay').show();
-// 		$('#startButton').show();
-// 	});
-
-
-
-// 	socket.on('updateUsers', function(userList){
-// 		users = userList;
-// 		console.log("Users recieved data from host");
-// 		updateLobby();
-// 		console.log(users);
-// 	});
-
-
-
-// 	socket.on('leaveGame', function(){
-// 		socket.emit("leaveGame", user);
-// 	});
 });
 
 
@@ -157,9 +150,8 @@ function generateId(length){
 }
 
 function errorScreen(message){
-	$('.gamePage').hide();
-	$('#errorScreen').show();
 	$('#errorMessage').html(message);
+	$('#errorScreen').show();
 }
 
 

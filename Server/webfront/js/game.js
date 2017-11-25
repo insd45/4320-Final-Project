@@ -21,6 +21,7 @@ function User(){
 //gameplay object
 function Game(host){
     this.users = [host];
+    this.disconnectedUsers = [];
     this.missionNumber = 1;
     this.screen = "lobbyScreen";
 }

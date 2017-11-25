@@ -37,7 +37,7 @@ io.on('connection', function(client) {
 		client.join(user.room);
 		//add the hosts user object to the room
 		io.sockets.adapter.rooms[user.room].host = user;
-		io.sockets.adapter.rooms[user.room].usernames.push(user.username);
+		io.sockets.adapter.rooms[user.room].usernames = [user.username];
 		client.emit('hostSetup', user);
 	});
 
@@ -56,7 +56,8 @@ io.on('connection', function(client) {
 		} else {
 			//pull host id off room
 			var host = io.sockets.adapter.rooms[user.room].host.clientId;
-
+			//add username to global username list
+			io.sockets.adapter.rooms[user.room].usernames.push(user.username);
 			//set user data
 			user.clientId = client.id;
 			client.user = user;
@@ -71,6 +72,22 @@ io.on('connection', function(client) {
 
 	client.on('syncMasterGamestate', function(game){
 		client.to(client.user.room).emit('syncGamestate', game);
+	});
+
+	client.on('disconnect', function(){
+		console.log("A User has disconnected");
+		if(client.user != null){
+			console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
+			
+			var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
+			var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
+			//console.log(host)
+			io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
+			console.log(io.sockets.adapter.rooms[client.user.room].usernames);
+
+			client.to(host).emit('userLeft', client.user);
+			delete client.user;
+		}
 	});
 
 	
@@ -95,9 +112,7 @@ io.on('connection', function(client) {
 	// 	client.leave(user.room);		
 	// });
 
-	// client.on('disconnect', function(){
-	// 	console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
-	// });
+	
 });
 
 
