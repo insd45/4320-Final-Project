@@ -1,4 +1,3 @@
-
 const MAX_PLAYERS = 10;
 
 var express = require('express');
@@ -89,28 +88,6 @@ io.on('connection', function(client) {
 			delete client.user;
 		}
 	});
-
-	
-
-	// client.on('updateUsers', function(users){
-	// 	client.emit('updateUsers', users);
-	// 	client.broadcast.to(users[0].room).emit('updateUsers', users);
-	// });
-
-	// client.on('renameUser', function(user){
-	// 	client.emit('userJoined', user);
-	// 	client.broadcast.to(user.room).emit('userJoined', user);
-	// 	console.log("RENAMING USER");
-	// });
-
-	// client.on('kickUser', function(user, message){
-	// 	client.to(user.clientId).emit("connectError", message);
-	// 	client.to(user.clientId).emit("leaveGame");
-	// });
-
-	// client.on('leaveGame', function(user){
-	// 	client.leave(user.room);		
-	// });
 
 	
 });

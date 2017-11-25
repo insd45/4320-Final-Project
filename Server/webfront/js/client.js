@@ -11,6 +11,7 @@ $(document).ready( function(){
 		socket.emit('joinGame', clientUser);
 	});
 
+	
 	//host interaction
 	$('#hostButton').click( function(){
 		createUser(true);
@@ -19,10 +20,12 @@ $(document).ready( function(){
 
 	//socket events
 
+
 	socket.on('connectError', function(message){
 		console.log(message);
 		errorScreen(message);
 	});
+
 
 	socket.on('syncGamestate', function(game){
 		clientGame = game;
@@ -62,6 +65,7 @@ $(document).ready( function(){
 		}
 	});
 
+
 	socket.on('userLeft', function(user){
 		console.log(user.username + ' Left the game');
 		var index = clientGame.users.findIndex(i => i.clientId == user.clientId);
@@ -70,7 +74,7 @@ $(document).ready( function(){
 		if(clientGame.screen != 'lobbyScreen'){
 			clientGame.disconnectedUsers.push(leftUser);
 		}
-		
+
 		socket.emit('syncMasterGamestate', clientGame);
 		generateView();
 	});
