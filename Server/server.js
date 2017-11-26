@@ -8,8 +8,8 @@ var app = express();
 app.use(express.static(path.join(__dirname, 'webfront/')));
 
 var server = app.listen(8080, '127.0.0.1', function () {
-	var port = server.address().port;
-	console.log('Server running at port %s', port);
+    var port = server.address().port;
+    console.log('Server running at port %s', port);
 });
 
 var io = require('socket.io')(server);
@@ -17,79 +17,79 @@ var io = require('socket.io')(server);
 /* Connection events */
 
 io.on('connection', function(client) {
-	// console.log('User connected');
+    // console.log('User connected');
 
-	//host setup
-	client.on('hostGame', function(user){
-		console.log("Host has started a room");
-		console.log(user);
+    //host setup
+    client.on('hostGame', function(user){
+        console.log("Host has started a room");
+        console.log(user);
 
-		//generate room code
-		user.room = user.clientVerificationId.substring(0,5);
-		user.room = user.room.toUpperCase();
+        //generate room code
+        user.room = user.clientVerificationId.substring(0,5);
+        user.room = user.room.toUpperCase();
 
-		//set user data
-		user.clientId = client.id;
-		client.user = user;
-		
-		console.log("Host room code is " + user.room);
-		client.join(user.room);
-		//add the hosts user object to the room
-		io.sockets.adapter.rooms[user.room].host = user;
-		io.sockets.adapter.rooms[user.room].usernames = [user.username];
-		client.emit('hostSetup', user);
-	});
+        //set user data
+        user.clientId = client.id;
+        client.user = user;
+        
+        console.log("Host room code is " + user.room);
+        client.join(user.room);
+        //add the hosts user object to the room
+        io.sockets.adapter.rooms[user.room].host = user;
+        io.sockets.adapter.rooms[user.room].usernames = [user.username];
+        client.emit('hostSetup', user);
+    });
 
-	//User setup
-	client.on('joinGame', function(user){
-		console.log("User has joined the Game");
-		user.room = user.room.toUpperCase();
-		
-		//kick if room is full/doesn't exist
-		if( io.sockets.adapter.rooms[user.room] == null ){
-			client.emit('connectError', "room doesn't exist");
-		} else if(io.sockets.adapter.rooms[user.room].length == MAX_PLAYERS){
-			client.emit('connectError', "room is full");
-		} else if ( io.sockets.adapter.rooms[user.room].usernames.indexOf(user.username) >= 0) {
-			client.emit('connectError', "username already taken");
-		} else {
-			//pull host id off room
-			var host = io.sockets.adapter.rooms[user.room].host.clientId;
-			//add username to global username list
-			io.sockets.adapter.rooms[user.room].usernames.push(user.username);
-			//set user data
-			user.clientId = client.id;
-			client.user = user;
+    //User setup
+    client.on('joinGame', function(user){
+        console.log("User has joined the Game");
+        user.room = user.room.toUpperCase();
+        
+        //kick if room is full/doesn't exist
+        if( io.sockets.adapter.rooms[user.room] == null ){
+            client.emit('connectError', "room doesn't exist");
+        } else if(io.sockets.adapter.rooms[user.room].length == MAX_PLAYERS){
+            client.emit('connectError', "room is full");
+        } else if ( io.sockets.adapter.rooms[user.room].usernames.indexOf(user.username) >= 0) {
+            client.emit('connectError', "username already taken");
+        } else {
+            //pull host id off room
+            var host = io.sockets.adapter.rooms[user.room].host.clientId;
+            //add username to global username list
+            io.sockets.adapter.rooms[user.room].usernames.push(user.username);
+            //set user data
+            user.clientId = client.id;
+            client.user = user;
 
-			console.log(user.username + " joining room " + user.room);
-			client.join(user.room);
+            console.log(user.username + " joining room " + user.room);
+            client.join(user.room);
 
-			client.emit('userJoined', user);
-			client.to(host).emit('userJoined', user);
-		}
-	});
+            client.emit('userJoined', user);
+            client.to(host).emit('userJoined', user);
+        }
+    });
 
-	client.on('syncMasterGamestate', function(game){
-		client.to(client.user.room).emit('syncGamestate', game);
-	});
+    client.on('syncMasterGamestate', function(game){
+        client.to(client.user.room).emit('syncGamestate', game);
+    });
 
-	client.on('disconnect', function(){
-		console.log("A User has disconnected");
-		if(client.user != null){
-			console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
-			
-			var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
-			var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
-			//console.log(host)
-			io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
-			console.log(io.sockets.adapter.rooms[client.user.room].usernames);
+    client.on('disconnect', function(){
+        console.log("A User has disconnected");
+        if(client.user != null){
+            console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
+            
+            var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
+            var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
+            //console.log(host)
+            io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
+            console.log(io.sockets.adapter.rooms[client.user.room].usernames);
 
-			client.to(host).emit('userLeft', client.user);
-			delete client.user;
-		}
-	});
+            client.to(host).emit('userLeft', client.user);
+            delete client.user;
+        }
+    });
 
-	
+    
 });
 
 
