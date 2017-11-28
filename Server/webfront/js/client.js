@@ -7,19 +7,24 @@ $(document).ready( function(){
     
     //user interaction
     $('#joinButton').click( function(){		
-        createUser(false);
-        socket.emit('joinGame', clientUser);
+        if(createUser(false)){
+            socket.emit('joinGame', clientUser);
+        }
     });
 
     
     //host interaction
     $('#hostButton').click( function(){
-        createUser(true);
-        socket.emit('hostGame', clientUser);
+        if(createUser(true)){
+            socket.emit('hostGame', clientUser);
+        }
     });
 
-    //socket events
+    /**
+     * Socket Events
+     */
 
+     /* Lobby events */
 
     socket.on('connectError', function(message){
         console.log(message);
@@ -79,91 +84,49 @@ $(document).ready( function(){
         generateView();
     });
 
+
+    /* Game Events */
 });
 
 
 
 //Create a new user
 function createUser(isHost){
-    clientUser = new User();
     var username = $('#username').val();
-    
+    var roomCode = $('#roomCode').val();
+
+    if(username.length == 0){
+        errorScreen("Enter a username");
+        return false;
+    }
+  
+    clientUser = new User();
     clientUser.isHost = isHost;
     clientUser.username = username;
     clientUser.clientVerificationId = generateId(4);
     
     if(!isHost){
-        clientUser.room = $('#roomCode').val();
+        clientUser.room = roomCode;
+    }
+
+    return true;
+}
+
+/* Game Specific functions */
+
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
     }
 }
 
-
-
-
-// View Handling
-function generateView(){
-    switch(clientGame.screen){
-        case 'lobbyScreen':
-            updateLobby();
-            transitionScreens('#lobbyScreen');
-            break;
-        default:
-    }
+function testShuffle(){
+    var newArr = ["evil","assassin","merlin","good","good"];
+    console.log(newArr);
+    shuffle(newArr);
+    console.log(newArr);
 }
-
-//handles all screen transitions
-function transitionScreens(nextScreen){
-    console.log("transitioned screens");
-    $('.gameScreen').hide();
-    $(nextScreen).show();
-}
-
-function updateLobby(){
-    var $startButton = $('#startButton');
-
-    $('#numPlayers').html(clientGame.users.length);
-
-    if(clientUser.isHost){
-        $startButton.show();
-        $('#lobbyCode').html(clientUser.room);
-        $('#lobbyDisplay').show();
-    }
-
-    if(clientGame.users.length >= MIN_PLAYERS && clientUser.isHost){
-        $startButton.show();
-    }
-
-    var lobbyContent = "";
-
-    for(var i = 0; i < clientGame.users.length; i++){
-        if(clientGame.users[i].clientId == clientUser.clientId){
-            lobbyContent += "<li class='list-group-item list-group-item-success'>"+ clientGame.users[i].username +"</li>";
-        } else{
-            lobbyContent += "<li class='list-group-item'>"+ clientGame.users[i].username +"</li>";
-        }
-    }
-
-    $('#userList').html(lobbyContent);
-}
-
-function generateId(length){
-    var uid = "";
-    function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
-    for(var i = 0; i < length; i++){ uid += s4(); }
-    return uid;
-}
-
-function errorScreen(message){
-    $('#errorMessage').html(message);
-    $('#errorScreen').show();
-}
-
-
-
-
-
-
-
-
-
-

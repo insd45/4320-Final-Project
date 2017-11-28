@@ -44,3 +44,20 @@
 
 Other)
 - if missions are rejected 5 times, then evil wins
+
+
+Roles to be included 
+* Good
+    - rest of good that isnt merlin
+* Evil
+    - rest of evil that isnt the assassin
+* merlin
+    - one of the good
+* assassin
+    - one of the evil
+
+- game needs at least 5 people to play, so in this case: 
+    - 2 evil    
+        - one normal evil, one assassin
+    - 3 good
+        - 2 normal good, one merlin

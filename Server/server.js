@@ -75,17 +75,20 @@ io.on('connection', function(client) {
 
     client.on('disconnect', function(){
         console.log("A User has disconnected");
-        if(client.user != null){
+        if(client.user.isHost){
+            client.to(client.user.room).emit('connectError', "Host has left the game");
+        } else if(client.user != null){
             console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
             
-            var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
-            var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
-            //console.log(host)
-            io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
-            console.log(io.sockets.adapter.rooms[client.user.room].usernames);
+            if (io.sockets.adapter.rooms[client.user.room] != null){
+                var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
+                var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
 
-            client.to(host).emit('userLeft', client.user);
-            delete client.user;
+                io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
+                console.log(io.sockets.adapter.rooms[client.user.room].usernames);
+
+                client.to(host).emit('userLeft', client.user);
+            }
         }
     });
 
