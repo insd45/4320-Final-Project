@@ -9,6 +9,7 @@ function User(){
     this.hostCliendId = "";
     
     //game specific properties
+    this.isLeader = false;
     this.alignment = "";
     this.role = "";
 }
@@ -21,10 +22,13 @@ function User(){
 //gameplay object
 function Game(host){
     this.users = [host];
+    this.missions [];
     this.disconnectedUsers = [];
     this.missionNumber = 1;
     this.screen = "lobbyScreen";
+    this.currLeader;
 }
 
-Game.prototype = {
+function Mission(){
+
 }
