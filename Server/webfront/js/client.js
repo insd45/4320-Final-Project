@@ -20,6 +20,22 @@ $(document).ready( function(){
         }
     });
 
+    $('#startButton').click( function(){
+        if(clientUser.isHost){
+            createMissions();
+            assignRoles();
+            
+            for(var i = 0; i < clientGame.users.length; i++){
+                socket.emit('syncUser', clientGame.users[i]);
+            } 
+
+            //clientGame.screen = "gameScreen";
+
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
+        }
+    });
+
     /**
      * Socket Events
      */
@@ -34,10 +50,10 @@ $(document).ready( function(){
 
     socket.on('syncGamestate', function(game){
         clientGame = game;
-        console.log("Syncing Gamestate")
+        console.log("Syncing Gamestate");
+        console.log(clientGame);
         generateView();
     });
-
 
     //host specific events
 
@@ -86,6 +102,11 @@ $(document).ready( function(){
 
 
     /* Game Events */
+    socket.on('updateUser', function(user){
+        clientUser = user;
+        console.log("Update user");
+        console.log(clientUser);
+    });
 });
 
 
@@ -113,6 +134,64 @@ function createUser(isHost){
 }
 
 /* Game Specific functions */
+
+function createMissions(){
+    var missionNumbers;
+
+    switch(clientGame.users.length){
+        case 5:
+            missionNumbers = [2,3,2,3,3];
+            break;
+        case 6:
+            missionNumbers = [2,3,4,3,4];
+            break;
+        case 7:
+            missionNumbers = [2,3,3,4,4];
+            break;
+        default:
+            missionNumbers = [3,4,4,5,5];
+    }
+
+    for(var i = 0; i<5; i++){
+        clientGame.missions.push(new Mission(missionNumbers[i]));
+    }
+
+    console.log(clientGame.missions);
+}
+
+function assignRoles(){
+    var roles;
+    
+    switch(clientGame.users.length){
+        case 5:
+            roles = ["merlin","good","good","assassin","evil"];
+            break;
+        case 6:
+            roles = ["merlin","good","good","good","assassin","evil"];
+            break;
+        case 7:
+            roles = ["merlin","good","good","good","assassin","evil","evil"];
+            break;
+        case 8:
+            roles = ["merlin","good","good","good","good","assassin","evil","evil"];
+            break;
+        case 9:
+            roles = ["merlin","good","good","good","good","good","assassin","evil","evil"];
+            break;
+        case 10:
+            roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
+            break;  
+        default:   
+    }
+
+    shuffle(roles);
+
+    for(var i = 0; i < clientGame.users.length; i++){
+        clientGame.users[i].role = roles[i];
+    } 
+
+    console.log(clientGame.users);
+}
 
 function shuffle(a) {
     var j, x, i;

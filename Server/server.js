@@ -18,6 +18,17 @@ var io = require('socket.io')(server);
 
 io.on('connection', function(client) {
     // console.log('User connected');
+    client.on('syncMasterGamestate', function(game){
+        client.to(client.user.room).emit('syncGamestate', game);
+    });
+
+    client.on('syncUser', function(user){
+        if(user.clientId == client.id){
+            client.emit('updateUser', user);    
+        } else{        
+            client.to(user.clientId).emit('updateUser', user);
+        }
+    });
 
     //host setup
     client.on('hostGame', function(user){
@@ -69,10 +80,7 @@ io.on('connection', function(client) {
         }
     });
 
-    client.on('syncMasterGamestate', function(game){
-        client.to(client.user.room).emit('syncGamestate', game);
-    });
-
+  
     client.on('disconnect', function(){
         console.log("A User has disconnected");
         if(client.user.isHost){

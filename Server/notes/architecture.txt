@@ -53,5 +53,16 @@ For Lobby phase
     * pass updated game object into the generateView() function (or object)
 
 
+Starting Game
+- Host clicks the start game button once at least 5 people have joined
+    * Host assigns roles to every user in their game object based on a shuffled role array
+    * for every user in the game, host then submits user objects directly to the user
+    - server gets client game object, submits down to client
+    * Host sets game object screen to gameScreen, mission 1, selects a leader (randomly)
+    * host then sends the master game object to all users, and updates their own screen
+
+
+
+
 
 

@@ -22,13 +22,15 @@ function User(){
 //gameplay object
 function Game(host){
     this.users = [host];
-    this.missions [];
+    this.missions = [];
     this.disconnectedUsers = [];
     this.missionNumber = 1;
     this.screen = "lobbyScreen";
     this.currLeader;
 }
 
-function Mission(){
-
+function Mission(numPlayers){
+    this.selectedUsers = [];
+    this.numPlayers = numPlayers;
+    this.status;  //true pass, false fail
 }
