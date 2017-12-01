@@ -13,7 +13,7 @@ body {
 }
 
 .progress {
-    margin-top: 10%;
+    margin-top: 4%;
     align-items: center;
 	height: 35px;
 }
@@ -21,29 +21,28 @@ body {
 .quest {
 	width:20%;
 	line-height: 35px;
+	font-family: fantasy;
 }
 
 .card {
-	background-image: url("images/card.png");
+	background-image: url("images/card2.png");
     background-position: center;
 	background-repeat: no-repeat;
 	background-size: 100%;
-    width: 70px;
-    height: 120px;
+    width: 100px;
+    height: 140px;
 	line-height: 120px;
     border-radius: 10%;
     text-align: center;
    	margin-left: auto;
 	margin-right: auto;
 	color: white;
+	font-weight: bold;
+	font-family: fantasy;
 }
 
 .card-container {
-    display: flex;
-	flex-direction: row;
-    margin-left: auto;
-	margin-right: auto;
-    margin-top: 8%;
+    margin-top: 10%;
 	width: 100%;
 }
 
@@ -61,7 +60,6 @@ body {
 	margin-right: auto;
 }
 
-
 .vote {
 /*	float: left;*/
     background-color: white;
@@ -70,7 +68,21 @@ body {
     border-radius: 50%;
 	margin-right: auto;
 	margin-left: auto;
+	opacity: .5;
+	font-family: fantasy;
+	font-size: 20px;
+	line-height: 45px;
 }
+
+.playerCard{
+	display: flex;
+	flex-direction: row;
+    margin-left: auto;
+	margin-right: auto;
+	height: 300px;
+	width: 200px;
+}
+
 
 
 
@@ -86,21 +98,31 @@ body {
 	}
 	
 	.card {
-		width: 140px;
-		height: 240px;
+		width: 200px;
+		height: 280px;
 		font-size: 18pt;
 		line-height: 240px;
 	}
 	
 	.vote {
-		height: 90px;
-		width: 90px;
+		height: 60px;
+		width: 60px;
+	    line-height: 60px;
 	}
 	
+
 	#avalonlogo{
-		height: 230px;
-		width: 330px;
+		height: 300px;
+		width: 200px;
 	}
+
+	
+	.playerCard{
+		height: auto;
+		width: auto;
+	}
+	
+	
 } 
 
 .modal-body{
@@ -110,5 +132,7 @@ body {
 .modal-title{
     text-align: center;
 }
+
+
 
 
