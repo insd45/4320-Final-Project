@@ -1,7 +1,7 @@
 /* Game Controller */
 
 var socket = io();
-const MIN_PLAYERS = 5;
+const MIN_PLAYERS = 2;
 var clientUser;
 var clientGame;
 
@@ -168,7 +168,9 @@ function gameSetup(){
             missionNumbers = [3,4,4,5,5];
             roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
             break;  
-        default:   
+        default: 
+            missionNumbers = [2,3,2,3,3];        
+            roles = ["merlin","evil","evil","assassin","evil"];
     }
 
     for(var i = 0; i<5; i++){

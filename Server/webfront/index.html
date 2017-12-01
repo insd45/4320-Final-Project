@@ -91,20 +91,28 @@
                     
                 </div>
                     
-                <!-- Player Card -->
+                <!-- Player Card Back -->
                 <div class="card-container">
                     <div class="card" data-toggle="modal" data-target="#myCharacter">
                             <p id="playerName"></p>
                     </div>	
                 </div>	
 
-                <!-- Modal -->
-                <div class="modal fade cardModal" id="myCharacter" role="dialog">
-                        <div class="modal-dialog">
+                <!-- Player Card info Modal -->
+                <div id="myCharacter" class="modal fade cardModal"  role="dialog">
+                        
+                        <div id="playerImage" class="modal-dialog">
                         
                             <!-- Modal content-->
-                            <img src="images/merlin.png" alt="merlin" class="playerCard">
                         
+                        </div>
+
+                        <div class="container  col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2">
+                            <ul id="evilPlayerList" class="list-group">
+                            </ul>
+
+                            
+                            <button id="closePlayerCardButton" class="btn btn-primary">Close</button>
                         </div>
                 </div>
                 
