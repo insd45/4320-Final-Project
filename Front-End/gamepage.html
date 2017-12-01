@@ -1,4 +1,5 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>v<!DOCTYPE html>
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <html lang="en">
 <head>
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,8 +23,8 @@
 			<img src="images/avalonTitle.png" alt="Avalon" id="avalonLogo">
             
             <div id="voteContainer">
-                <div class="vote"></div>
-                <div class="vote"></div>
+                <div class="vote" style="background-color: #2f3bd3;"></div>
+                <div class="vote" style="background-color:#d12525;"></div>
                 <div class="vote"></div>
                 <div class="vote"></div>
                 <div class="vote"></div>
@@ -32,20 +33,20 @@
             
         <div class="progress">
             <!-- Proof of concept -->
-            <div class="progress-bar quest progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                Quest 1
+            <div id="mission1" class="progress-bar quest progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+                Mission 1
             </div>
-            <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                Quest 2
+            <div id="mission2" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+                Mission 2
             </div>
-                 <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
-                Quest 3
+            <div id="mission3" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
+                Mission 3
             </div>
-                 <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
-                Quest 4
+            <div id="mission4" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
+                Mission 4
             </div>
-                 <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                Quest 5
+            <div id="mission5" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+                Mission 5
             </div>
             
         </div>
@@ -68,73 +69,59 @@
 			  <div class="card">
                     <p>hello</p>
                 </div>
-		
-
-		
 		</div>
 		
-
-		
-		<br>
+        <br>
 		
 		   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Team Voting</button>
 		
-		   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2">Quest Voting</button>
-		
-    </div>
+		   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2">Mission Voting</button>
     
   
     
-     <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-         
-          <h4 class="modal-title">Team Voting</h4>
-        </div>
-        <div class="modal-body">
-          <h2>Do you approve this team?</h2>
-			
-				
-            <button type="button" class="btn btn-primary">Yes</button>
-            <button type="button" class="btn btn-primary">No</button>
-            
+             <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
 
-            
-        </div>
-        <div class="modal-footer">
-        
-        </div>
-      </div>
-  </div>
-</div>
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+
+                      <h4 class="modal-title">Team Voting</h4>
+                    </div>
+                    <div class="modal-body">
+                      <h2>Do you approve this team?</h2>
+                        <button type="button" class="btn btn-primary">Yes</button>
+                        <button type="button" class="btn btn-primary">No</button>
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                  </div>
+                </div>
+            </div>
        
 
     
-     <!-- Modal -->
-  <div class="modal fade" id="myModal2" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-         
-          <h4 class="modal-title">Quest Voting</h4>
-        </div>
-        <div class="modal-body">
-          <h2 >Would you like this mission to Succeed or Fail?</h2>
-            <button type="button" class="btn btn-primary">Succeed</button>
-            <button type="button" class="btn btn-primary">Fail</button>
-                   
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
-  </div>
-</div>
+             <!-- Modal -->
+            <div class="modal fade" id="myModal2" role="dialog">
+                <div class="modal-dialog">
 
+                  <!-- Modal content-->
+                    <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Mission Voting</h4>
+                    </div>
+                    <div class="modal-body">
+                      <h2 >Success or Fail?</h2>
+                        <button type="button" class="btn btn-primary">Success</button>
+                        <button type="button" class="btn btn-primary">Fail</button>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                  </div>
+                </div>
+            </div>
+    </div>
 </body>        
 </html>

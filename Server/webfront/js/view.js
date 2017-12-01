@@ -58,3 +58,49 @@ function errorScreen(message){
     $('#errorMessage').html(message);
     $('#errorScreen').show();
 }
+
+function updateVoteBar(){
+    var voteString;
+    for(var i = 0; i < 5; i++){
+        if (clientGame.mission[i].status) {
+            voteString += "<div class='vote' style='background-color:#2f3bd3;'></div>";
+        } else if (!clientGame.mission[i].status) {
+            voteString += "<div class='vote' style='background-color:#d12525;'></div>";
+        } else {
+            voteString += "<div class='vote' style='background-color:white;'></div>";
+        }
+    }
+    $('#voteContainer').html(voteString);
+}
+
+function updateMissionBar(){
+    switch(clientGame.missionNumber){
+        case 1:
+            $('#mission1').addClass(progress-bar-striped);
+            break;
+        case 2:
+            $('#mission2').addClass(progress-bar-striped);
+            $('#mission1').removeClass(progress-bar-striped);
+            break;
+        case 3:
+            $('#mission3').addClass(progress-bar-striped);
+            $('#mission2').removeClass(progress-bar-striped);
+            break;
+        case 4:
+            $('#mission4').addClass(progress-bar-striped);
+            $('#mission3').removeClass(progress-bar-striped);
+            break;
+        case 5:
+            $('#mission5').addClass(progress-bar-striped);
+            $('#mission4').removeClass(progress-bar-striped);
+            break;
+        default:
+    } 
+}
+
+
+
+
+
+
+
