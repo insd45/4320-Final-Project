@@ -63,6 +63,6 @@ Starting Game
 
 
 
-
-
-
+Voting
+- Game fully set up, host clicks start game, game begins
+    * First leader is shown user selection screen, gets list of users, asked to choose players one at a time 
