@@ -6,6 +6,10 @@ function generateView(){
             updateLobby();
             transitionScreens('#lobbyScreen');
             break;
+        case 'gameScreen':
+            updateVoteBar();
+            transitionScreens('#gameScreen');
+            break;
         default:
     }
 }
@@ -57,4 +61,47 @@ function generateId(length){
 function errorScreen(message){
     $('#errorMessage').html(message);
     $('#errorScreen').show();
+}
+
+function updatePlayerCard(){
+    $('#playerName').html(clientUser.username);
+}
+
+function updateVoteBar(){
+    var voteString = "";
+    for(var i = 0; i < 5; i++){
+        if (clientGame.missions[i].status == 1) {
+            voteString += "<div class='vote' style='background-color:#2f3bd3;'>"+(i+1)+"</div>";
+        } else if (!clientGame.missions[i].status == 2) {
+            voteString += "<div class='vote' style='background-color:#d12525;'>"+(i+1)+"</div>";
+        } else {
+            voteString += "<div class='vote'>"+(i+1)+"</div>";
+        }
+    }
+    $('#voteContainer').html(voteString);
+}
+
+function updateMissionBar(){
+    switch(clientGame.missionNumber){
+        case 1:
+            $('#mission1').addClass(progress-bar-striped);
+            break;
+        case 2:
+            $('#mission2').addClass(progress-bar-striped);
+            $('#mission1').removeClass(progress-bar-striped);
+            break;
+        case 3:
+            $('#mission3').addClass(progress-bar-striped);
+            $('#mission2').removeClass(progress-bar-striped);
+            break;
+        case 4:
+            $('#mission4').addClass(progress-bar-striped);
+            $('#mission3').removeClass(progress-bar-striped);
+            break;
+        case 5:
+            $('#mission5').addClass(progress-bar-striped);
+            $('#mission4').removeClass(progress-bar-striped);
+            break;
+        default:
+    } 
 }

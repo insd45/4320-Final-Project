@@ -30,7 +30,7 @@ $(document).ready( function(){
                 socket.emit('syncUser', clientGame.users[i]);
             } 
 
-            //clientGame.screen = "gameScreen";
+            clientGame.screen = "gameScreen";
 
             socket.emit('startGame');
             socket.emit('syncMasterGamestate', clientGame);

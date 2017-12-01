@@ -33,7 +33,7 @@ function Mission(numPlayers){
     this.selectedUsers = [];
     this.numPlayers = numPlayers;
     this.leader = "";
-    this.status;  //true pass, false fail 
+    this.status = 0;  //1 pass, 2 fail, 0 nothing 
     
     //voting
     this.acceptMissionVotes = [];

@@ -20,36 +20,35 @@
 	 	
 </head>
 <body>
-    <div class="container">
+    <div id="gameScreen" class="container" style="display:none;">
         
         <div class="text-center">
      
 			<img src="images/avalonTitle.png" alt="Avalon" id="avalonLogo">
             
             <div id="voteContainer">
-                <div class="vote" data-toggle="modal" data-target="#myModal2">1</div>
-                <div class="vote">2</div>
-                <div class="vote">3</div>
-                <div class="vote">4</div>
-                <div class="vote">5</div>
             </div>
         </div>
             
         <div class="progress" data-toggle="modal" data-target="#myModal">
             <!-- Proof of concept -->
-            <div class="progress-bar quest progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+            <div id="mission1" class="progress-bar quest progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
                 Quest 1
             </div>
-            <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+            
+            <div id="mission2" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
                 Quest 2
             </div>
-                 <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
+            
+            <div id="mission3" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
                 Quest 3
             </div>
-                 <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
+            
+            <div id="mission4" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
                 Quest 4
             </div>
-                 <div class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+            
+            <div id="mission5" class="progress-bar quest" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
                 Quest 5
             </div>
             
@@ -61,75 +60,73 @@
                 <div class="card" data-toggle="modal" data-target="#myCharacter">
            			<p>Jacob</p>
                 </div>	
-		</div>		
-    </div>
+		    </div>	
+    
     
   
-     <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-         
-          <h4 class="modal-title">Team Voting</h4>
-        </div>
-        <div class="modal-body">
-          <h2>Do you approve this team?</h2>
-			
-				
-            <button type="button" class="btn btn-primary">Yes</button>
-            <button type="button" class="btn btn-primary">No</button>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog">
+          
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+              
+                <h4 class="modal-title">Team Voting</h4>
+              </div>
+              <div class="modal-body">
+                <h2>Do you approve this team?</h2>
             
+              
+                  <button type="button" class="btn btn-primary">Yes</button>
+                  <button type="button" class="btn btn-primary">No</button>
+                  
 
-            
+                  
+              </div>
+              <div class="modal-footer"></div>
+            </div>
+          </div>
         </div>
-        <div class="modal-footer">
+          
+
         
+        <!-- Modal -->
+      <div class="modal fade" id="myModal2" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+            
+              <h4 class="modal-title">Quest Voting</h4>
+            </div>
+            <div class="modal-body">
+              <h2>Would you like this mission to Succeed or Fail?</h2>
+                <button type="button" class="btn btn-primary">Succeed</button>
+                <button type="button" class="btn btn-primary">Fail</button>
+                      
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
         </div>
       </div>
-  </div>
-</div>
-       
 
-    
-     <!-- Modal -->
-  <div class="modal fade" id="myModal2" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-         
-          <h4 class="modal-title">Quest Voting</h4>
-        </div>
-        <div class="modal-body">
-          <h2>Would you like this mission to Succeed or Fail?</h2>
-            <button type="button" class="btn btn-primary">Succeed</button>
-            <button type="button" class="btn btn-primary">Fail</button>
-                   
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
-  </div>
-</div>
+        <!-- Modal -->
+      <div class="modal fade cardModal" id="myCharacter" role="dialog">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+      
+            
+          <img src="images/merlin.png" alt="merlin" class="playerCard">
+      
+          
 
-     <!-- Modal -->
-  <div class="modal fade cardModal" id="myCharacter" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-   
-      	
-      <img src="images/merlin.png" alt="merlin" class="playerCard">
-  
-       
-
-  </div>
-</div>	
+        </div>
+      </div>	
 		
-	
+</div>
 </body>        
 </html>
