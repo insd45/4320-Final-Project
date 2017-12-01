@@ -1,3 +1,5 @@
+/* Game Controller */
+
 var socket = io();
 const MIN_PLAYERS = 5;
 var clientUser;
@@ -21,9 +23,8 @@ $(document).ready( function(){
     });
 
     $('#startButton').click( function(){
-        if(clientUser.isHost){
-            createMissions();
-            assignRoles();
+        if(clientUser.isHost && clientGame.users.length >= MIN_PLAYERS){
+            gameSetup();
             
             for(var i = 0; i < clientGame.users.length; i++){
                 socket.emit('syncUser', clientGame.users[i]);
@@ -31,6 +32,7 @@ $(document).ready( function(){
 
             //clientGame.screen = "gameScreen";
 
+            socket.emit('startGame');
             socket.emit('syncMasterGamestate', clientGame);
             generateView();
         }
@@ -95,7 +97,7 @@ $(document).ready( function(){
         if(clientGame.screen != 'lobbyScreen'){
             clientGame.disconnectedUsers.push(leftUser);
         }
-
+        
         socket.emit('syncMasterGamestate', clientGame);
         generateView();
     });
@@ -135,53 +137,42 @@ function createUser(isHost){
 
 /* Game Specific functions */
 
-function createMissions(){
+function gameSetup(){
+    var roles;
+    var leader;
     var missionNumbers;
-
+    
+    //assign roles and mission based on number of players
     switch(clientGame.users.length){
         case 5:
-            missionNumbers = [2,3,2,3,3];
+            missionNumbers = [2,3,2,3,3];        
+            roles = ["merlin","good","good","assassin","evil"];
             break;
         case 6:
-            missionNumbers = [2,3,4,3,4];
+            missionNumbers = [2,3,4,3,4];        
+            roles = ["merlin","good","good","good","assassin","evil"];
             break;
         case 7:
-            missionNumbers = [2,3,3,4,4];
+            missionNumbers = [2,3,3,4,4];        
+            roles = ["merlin","good","good","good","assassin","evil","evil"];
             break;
-        default:
+        case 8:
             missionNumbers = [3,4,4,5,5];
+            roles = ["merlin","good","good","good","good","assassin","evil","evil"];
+            break;
+        case 9:
+            missionNumbers = [3,4,4,5,5];
+            roles = ["merlin","good","good","good","good","good","assassin","evil","evil"];
+            break;
+        case 10:
+            missionNumbers = [3,4,4,5,5];
+            roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
+            break;  
+        default:   
     }
 
     for(var i = 0; i<5; i++){
         clientGame.missions.push(new Mission(missionNumbers[i]));
-    }
-
-    console.log(clientGame.missions);
-}
-
-function assignRoles(){
-    var roles;
-    
-    switch(clientGame.users.length){
-        case 5:
-            roles = ["merlin","good","good","assassin","evil"];
-            break;
-        case 6:
-            roles = ["merlin","good","good","good","assassin","evil"];
-            break;
-        case 7:
-            roles = ["merlin","good","good","good","assassin","evil","evil"];
-            break;
-        case 8:
-            roles = ["merlin","good","good","good","good","assassin","evil","evil"];
-            break;
-        case 9:
-            roles = ["merlin","good","good","good","good","good","assassin","evil","evil"];
-            break;
-        case 10:
-            roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
-            break;  
-        default:   
     }
 
     shuffle(roles);
@@ -190,8 +181,20 @@ function assignRoles(){
         clientGame.users[i].role = roles[i];
     } 
 
-    console.log(clientGame.users);
+    //assign leaders for missions
+    leader = Math.floor(Math.random() * (clientGame.users.length));
+    clientGame.users[leader].isLeader = true;
+    console.log("LEADER INDEX = " + leader);
+
+    for(var i = 0; i < clientGame.missions.length; i++){
+        if(leader == clientGame.users.length){
+            leader = 0;
+        }
+        clientGame.missions[i].leader = clientGame.users[leader];
+        leader++;
+    }
 }
+
 
 function shuffle(a) {
     var j, x, i;
@@ -201,11 +204,4 @@ function shuffle(a) {
         a[i] = a[j];
         a[j] = x;
     }
-}
-
-function testShuffle(){
-    var newArr = ["evil","assassin","merlin","good","good"];
-    console.log(newArr);
-    shuffle(newArr);
-    console.log(newArr);
 }

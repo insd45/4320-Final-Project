@@ -17,17 +17,24 @@ var io = require('socket.io')(server);
 /* Connection events */
 
 io.on('connection', function(client) {
-    // console.log('User connected');
+    
+    //sync gamestate to all users in room
     client.on('syncMasterGamestate', function(game){
         client.to(client.user.room).emit('syncGamestate', game);
     });
 
+    //sync user object to user
     client.on('syncUser', function(user){
         if(user.clientId == client.id){
             client.emit('updateUser', user);    
         } else{        
             client.to(user.clientId).emit('updateUser', user);
         }
+    });
+
+    client.on('startGame', function(){
+        console.log("Room " + client.user.room + " has started the game");
+        io.sockets.adapter.rooms[client.user.room].isInProgress = true;
     });
 
     //host setup
@@ -45,8 +52,10 @@ io.on('connection', function(client) {
         
         console.log("Host room code is " + user.room);
         client.join(user.room);
-        //add the hosts user object to the room
-        io.sockets.adapter.rooms[user.room].host = user;
+        
+        //set room properties
+        io.sockets.adapter.rooms[user.room].isInProgress = false;
+        io.sockets.adapter.rooms[user.room].host = user; //add the hosts user object to the room
         io.sockets.adapter.rooms[user.room].usernames = [user.username];
         client.emit('hostSetup', user);
     });
@@ -63,6 +72,9 @@ io.on('connection', function(client) {
             client.emit('connectError', "room is full");
         } else if ( io.sockets.adapter.rooms[user.room].usernames.indexOf(user.username) >= 0) {
             client.emit('connectError', "username already taken");
+        } else if (io.sockets.adapter.rooms[user.room].isInProgress){
+            //handle recconect event here
+            client.emit('connectError', "Game in progress");
         } else {
             //pull host id off room
             var host = io.sockets.adapter.rooms[user.room].host.clientId;
@@ -80,22 +92,24 @@ io.on('connection', function(client) {
         }
     });
 
-  
+    //handle user disconnect
     client.on('disconnect', function(){
         console.log("A User has disconnected");
-        if(client.user.isHost){
-            client.to(client.user.room).emit('connectError', "Host has left the game");
-        } else if(client.user != null){
-            console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
-            
-            if (io.sockets.adapter.rooms[client.user.room] != null){
-                var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
-                var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
+        if(client.user != null){
+            if(client.user.isHost){
+                client.to(client.user.room).emit('connectError', "Host has left the game");
+            } else {
+                console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
+                
+                if (io.sockets.adapter.rooms[client.user.room] != null){
+                    var index = io.sockets.adapter.rooms[client.user.room].usernames.indexOf(client.user.username);
+                    var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
 
-                io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
-                console.log(io.sockets.adapter.rooms[client.user.room].usernames);
+                    io.sockets.adapter.rooms[client.user.room].usernames.splice(index, 1);
+                    console.log(io.sockets.adapter.rooms[client.user.room].usernames);
 
-                client.to(host).emit('userLeft', client.user);
+                    client.to(host).emit('userLeft', client.user);
+                }
             }
         }
     });
