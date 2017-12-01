@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Test Webfront</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width = device-width, initial-scale = 1">
+               
+        
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
+        <script src="js/Vendor/jquery-3.2.1.min.js"></script>
+        <script src="js/Vendor/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+        
+        <script type="text/javascript" src="js/Vendor/socket.io.js"></script>        
+        <script src="js/game.js"></script>
+        <script src="js/view.js"></script>
+        <script src="js/client.js"></script>
+        
+
+        <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+        <link rel="stylesheet" type="text/css" href="js/Vendor/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+        
+        
+    </head>
+
+    <body style="text-align:center">
+        <div class="container  col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+            <div id="errorScreen" class="gameScreen row alert alert-danger" style="display:none;">
+                <strong>Connection Error</strong><br>
+                <p id="errorMessage"></p>
+            </div>
+
+            <div id="startScreen" class="gameScreen container" style="display:block;">
+                <h4 style="margin-top:30px;">Enter Username</h4>    
+                <input type="text" id="username" style="margin-bottom:20px;"><br>
+                    
+                <h4 style="margin-top:30px;">Enter Room Code</h4>
+                <input type="text" id="roomCode" style="margin-bottom:20px;"><br>
+                <button id="joinButton" class="btn btn-primary">Join game</button><br>
+                <button id="hostButton" class="btn btn-primary" style="margin-top:30px;">Host game</button> 
+                
+            </div>
+
+            <div id="lobbyScreen" class="gameScreen container col-lg-offset-4 col-lg-4" style="display:none;">
+                <h3>Players Connected</h3>
+                <span id="numPlayers">0</span> <span>/ 10</span>
+                <br>
+                <h5 id="lobbyDisplay" style="margin-top: 40px; display: none;">Lobby Code: <span id="lobbyCode"></span></h3>
+                
+                <h4 style="margin-top: 30px">Players</h4>
+                <ul id ="userList" class="list-group">
+                </ul>
+
+                <button id="startButton" style="margin-top: 40px;display: none;" class="btn btn-primary" disabled="disabled">Start Game</button>
+            </div>
+
+            
+
+         </div>
+    </body>
+
+</html>

@@ -1,0 +1,63 @@
+0) GAME SETUP
+- Everyone given a role
+- evil players look at each other
+- merlin looks at evil players
+
+1) Mission Select Phase
+- Leader is chosen
+- Leader picks a team
+
+2) Everyone votes on players with yes or no
+- team accepted if majority vote
+- tie is a loss
+- votes are public
+
+    2a) Team Accepted
+        - Game continues with selected team
+
+    2b) Team Rejected
+        - team leader moves to the next player
+        - repeat step 2
+
+3) Carry out mission
+- selected team either selects pass or fail
+- only evil can fail
+
+4) Everyone Views results of mission
+- this is anonymous
+- if even 1 fail, then the entire mission fails
+- board is updated with either pass or fail for the mission
+
+5) WIN STATES
+- two win conditions: 
+    - evil wins, game over
+    - good wins, merlin assasination attempt
+
+    5a) Evil wins
+    - if evil team fails 3 rounds they win, game over
+
+    5b) Good wins
+    - evil is revealed
+    - evil gets one change to kill merlin
+    - if they choose correctly, they win, else they lose
+
+
+Other)
+- if missions are rejected 5 times, then evil wins
+
+
+Roles to be included 
+* Good
+    - rest of good that isnt merlin
+* Evil
+    - rest of evil that isnt the assassin
+* merlin
+    - one of the good
+* assassin
+    - one of the evil
+
+- game needs at least 5 people to play, so in this case: 
+    - 2 evil    
+        - one normal evil, one assassin
+    - 3 good
+        - 2 normal good, one merlin

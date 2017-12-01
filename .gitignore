@@ -1,0 +1,5 @@
+.DS_Store
+Server/node_modules/*
+Server/webfront/js/Vendor/bootstrap-3.3.7-dist
+Server/webfront/js/Vendor/jquery-3.2.1.min.js
+
