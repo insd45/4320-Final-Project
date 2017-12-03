@@ -25,7 +25,8 @@
     </head>
 
     <body style="text-align:center">
-        <div class="container  col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        
+        <div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
             <div id="errorScreen" class="gameScreen row alert alert-danger" style="display:none;">
                 <strong>Connection Error</strong><br>
@@ -33,10 +34,10 @@
             </div>
 
             <div id="startScreen" class="gameScreen container" style="display:block;">
-                <h4 style="margin-top:30px;">Enter Username</h4>    
+                <h4 class="visibleText" style="margin-top:30px;">Enter Username</h4>    
                 <input type="text" id="username" style="margin-bottom:20px;"><br>
                     
-                <h4 style="margin-top:30px;">Enter Room Code</h4>
+                <h4 class="visibleText" style="margin-top:30px;">Enter Room Code</h4>
                 <input type="text" id="roomCode" style="margin-bottom:20px;"><br>
                 <button id="joinButton" class="btn btn-primary">Join game</button><br>
                 <button id="hostButton" class="btn btn-primary" style="margin-top:30px;">Host game</button> 
@@ -44,12 +45,15 @@
             </div>
 
             <div id="lobbyScreen" class="gameScreen container col-lg-offset-4 col-lg-4" style="display:none;">
-                <h3>Players Connected</h3>
-                <span id="numPlayers">0</span> <span>/ 10</span>
-                <br>
-                <h5 id="lobbyDisplay" style="margin-top: 40px; display: none;">Lobby Code: <span id="lobbyCode"></span></h3>
+                <div class="visibleText">
+                    <h3>Players Connected</h3>
+                    <span id="numPlayers">0</span> <span>/ 10</span>
+                    <br>
+                    <h5 id="lobbyDisplay" style="margin-top: 40px; display: none;">Lobby Code: <span id="lobbyCode"></span></h5>
+                    <h4 style="margin-top: 30px">Players</h4>
+                </div>
+
                 
-                <h4 style="margin-top: 30px">Players</h4>
                 <ul id ="userList" class="list-group">
                 </ul>
 
@@ -68,7 +72,6 @@
                 </div>
                         
                 <div class="progress" data-toggle="modal" data-target="#myModal">
-                    <!-- Proof of concept -->
                     <div id="mission1" class="progress-bar quest progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
                         Quest 1
                     </div>
@@ -118,58 +121,52 @@
                 
                 
               
-                <!-- Modal -->
+                <!-- Team Approval Modal -->
                 <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
-                    
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        
-                        <h4 class="modal-title">Team Voting</h4>
-                        </div>
-                        <div class="modal-body">
-                        <h2>Do you approve this team?</h2>
-                    
-                        
-                            <button type="button" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-primary">No</button>
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
                             
-        
+                            <h4 class="modal-title">Team Voting</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <h2>Do you approve this team?</h2>
                             
+                                <button type="button" class="btn btn-primary">Yes</button>
+                                <button type="button" class="btn btn-primary">No</button>
+                                  
+                            </div>
+
+                            <div class="modal-footer"></div>
                         </div>
-                        <div class="modal-footer"></div>
-                    </div>
                     </div>
                 </div>
                       
             
                     
-                <!-- Modal -->
+                <!-- Succes or Fail modal -->
                 <div class="modal fade" id="myModal2" role="dialog" data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog">
-                
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                    <div class="modal-header">
-                    
-                        <h4 class="modal-title">Quest Voting</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h2>Would you like this mission to Succeed or Fail?</h2>
-                        <button type="button" class="btn btn-primary">Succeed</button>
-                        <button type="button" class="btn btn-primary">Fail</button>
-                                
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                    </div>
-                </div>
-                </div>
-            
-                
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Quest Voting</h4>
+                            </div>
 
+                            <div class="modal-body">
+                                <h2>Would you like this mission to Succeed or Fail?</h2>
+                                <button type="button" class="btn btn-primary">Succeed</button>
+                                <button type="button" class="btn btn-primary">Fail</button>       
+                            </div>
+
+                            <div class="modal-footer"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-         </div>
+
+        </div>
     </body>
 </html>

@@ -47,8 +47,8 @@ body {
 }
 
 #avalonLogo {
-    height: 170px;
-    width: 270px;
+    height: 100px;
+    width: 159px;
 }
 
 #voteContainer {
@@ -83,11 +83,22 @@ body {
 	width: 200px;
 }
 
+.visibleText{
+	color: white;
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+
 
 
 
 
 @media(min-width: 800px) {
+	#avalonLogo {
+		height: 150px;
+		width: 238px;
+	}
+
 	.progress {
 		height: 55px;
 	}

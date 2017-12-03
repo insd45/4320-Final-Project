@@ -97,7 +97,7 @@ io.on('connection', function(client) {
         console.log("A User has disconnected");
         if(client.user != null){
             if(client.user.isHost){
-                client.to(client.user.room).emit('connectError', "Host has left the game");
+                client.to(client.user.room).emit('connectError', "Host has left the game, the game has ended");
             } else {
                 console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
                 
