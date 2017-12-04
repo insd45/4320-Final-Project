@@ -1,7 +1,7 @@
 /* Game Controller */
 
 var socket = io();
-const MIN_PLAYERS = 2;
+const MIN_PLAYERS = 1;
 var clientUser;
 var clientGame;
 
@@ -109,6 +109,13 @@ $(document).ready( function(){
         console.log("Update user");
         console.log(clientUser);
     });
+
+    //host game functions
+    socket.on('updateMissionUsers', function(users){
+        clientGame.missions[clientGame.missionNumber].selectedUsers = users;
+        socket.emit('syncMasterGamestate', clientGame);
+        generateView();
+    });
 });
 
 
@@ -136,6 +143,18 @@ function createUser(isHost){
 }
 
 /* Game Specific functions */
+
+// function submitUsers(){
+//     var selectableUsers = clientGame.users;
+//     var users = [];
+
+//     for(var i = 0; i < clientGame.missions[clientGame.missionNumber]; i++){
+//         //handle user selection from view
+//     }
+
+
+//     socket.emit('chosenMissionUsers', users);
+// }
 
 function gameSetup(){
     var roles;
@@ -169,7 +188,8 @@ function gameSetup(){
             roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
             break;  
         default: 
-            missionNumbers = [2,3,2,3,3];        
+            //For testing
+            missionNumbers = [3,0,0,0,0];
             roles = ["merlin","evil","evil","assassin","evil"];
     }
 

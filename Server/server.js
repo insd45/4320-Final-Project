@@ -37,6 +37,11 @@ io.on('connection', function(client) {
         io.sockets.adapter.rooms[client.user.room].isInProgress = true;
     });
 
+    client.on('chosenMissionUsers', function(users){
+        var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
+        client.to(host).emit('updateMissionUsers', users);
+    });
+
     //host setup
     client.on('hostGame', function(user){
         console.log("Host has started a room");

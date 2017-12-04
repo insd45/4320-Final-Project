@@ -5,6 +5,33 @@ $(document).ready( function(){
     $('#closePlayerCardButton').click(function(){
         $('#myCharacter').modal('hide');
     });
+
+    $('#startTeamSelection').click(function(){
+        clientGame.missions[clientGame.missionNumber].selectedUsers = [];
+        $('#missionTeamSelect').modal('show');
+    });
+
+    $('.missionSelectionItem').click(function(){
+        var index = $(this).val();
+        var user = clientGame.users[index];
+        var currMissionArray = clientGame.missions[clientGame.missionNumber].selectedUsers;
+
+        currMissionArray.push(user);
+        //$('#missionTeamSelect').modal('hide');
+
+        console.log(clientGame.missions[clientGame.missionNumber].selectedUsers);
+
+        if(currMissionArray.length == clientGame.missions[clientGame.missionNumber].numPlayers){
+            $('#missionTeamSelect').modal('hide');
+            if(clientUser.isHost){
+                socket.emit('syncMasterGamestate', clientGame);
+            } else {
+                socket.emit('chosenMissionUsers', currMissionArray);
+            }
+        } else {
+            $(this).prop('disabled', true);
+        }
+    });
 });
 
 
