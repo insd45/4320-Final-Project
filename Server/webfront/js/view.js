@@ -8,12 +8,13 @@ $(document).ready( function(){
 
     $('#startTeamSelection').click(function(){
         clientGame.missions[clientGame.missionNumber].selectedUsers = [];
+        generateUserChoiceList();
         $('#missionTeamSelect').modal('show');
     });
 
-    $('.missionSelectionItem').click(function(){
+    $('#missionUserSelectionList').on('click', '.missionSelectionItem', function(){
         var index = $(this).val();
-        var user = clientGame.users[index];
+        var user = {username: clientGame.users[index].username, clientId: clientGame.users[index].clientId};
         var currMissionArray = clientGame.missions[clientGame.missionNumber].selectedUsers;
 
         currMissionArray.push(user);
@@ -25,6 +26,7 @@ $(document).ready( function(){
             $('#missionTeamSelect').modal('hide');
             if(clientUser.isHost){
                 socket.emit('syncMasterGamestate', clientGame);
+                generateView();
             } else {
                 socket.emit('chosenMissionUsers', currMissionArray);
             }
@@ -33,6 +35,18 @@ $(document).ready( function(){
         }
     });
 });
+
+function generateUserChoiceList(){
+    $('#missionSelectionDialog').html("Leader, choose " + clientGame.missions[clientGame.missionNumber].numPlayers + " players for this mission");    
+    var $userList = $('#missionUserSelectionList');
+    var userListString = "";
+
+    for(var i = 0; i< clientGame.users.length; i++){
+        userListString += "<button class='btn btn-primary missionSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
+    }
+
+    $userList.html(userListString);
+}
 
 
 function generateView(){
@@ -44,13 +58,31 @@ function generateView(){
         case 'gameScreen':
             updatePlayerCard();
             updateVoteBar();
+            updateMissionUserList();
             transitionScreens('#gameScreen');
             break;
         default:
     }
 }
 
-//handles all screen transitions
+function updateMissionUserList(){
+    var userString = "";
+    var mission = clientGame.missions[clientGame.missionNumber];
+
+    if(clientUser.clientId == mission.leader.clientId){
+        $("#startTeamSelection").show();
+    } else {
+        $("#startTeamSelection").hide();
+    }
+    userString += "<li class='list-group-item list-group-item-warning'>Leader: "+ mission.leader.username +"</li>";
+    for(var i = 0; i < mission.selectedUsers.length; i++){
+        userString += "<li class='list-group-item'>"+ mission.selectedUsers[i].username +"</li>";
+    }
+
+    $("#currentMissionUserList").html(userString);
+}
+
+//handles screen transitions
 function transitionScreens(nextScreen){
     console.log("transitioned screens");
     $('.gameScreen').hide();

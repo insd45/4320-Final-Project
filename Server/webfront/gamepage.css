@@ -42,8 +42,10 @@ body {
 }
 
 .card-container {
-    margin-top: 10%;
-	width: 100%;
+	position: fixed;
+    bottom: 10px;
+    left: 10px;
+	/* width: 100%; */
 }
 
 #avalonLogo {
