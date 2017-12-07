@@ -125,31 +125,21 @@ $(document).ready( function(){
         generateView();
     });
 
-    socket.on('recievedUserTeamVote', function(vote){
+    socket.on('recievedUserTeamVote', function(clientVote){
         console.log("host recieved vote");
-        var mission = clientGame.missions[clientGame.missionNumber];   
+        var mission = clientGame.missions[clientGame.missionNumber]; 
     
-        if(vote == true){
-            mission.acceptMissionVotes.push(1);
+        if(clientVote.vote == "Yes"){
+            mission.acceptMissionVotes.push(clientVote);
             mission.acceptVotes += 1;        
         } else {
-            mission.acceptMissionVotes.push(0);
+            mission.acceptMissionVotes.push(clientVote);
             mission.rejectVotes += 1;
         }
 
-        if(mission.acceptMissionVotes.length == clientGame.users.length){
-            if(mission.acceptVotes > mission.rejectVotes){
-                //pass
-                socket.emit("missionTeamAccepted", mission.selectedUsers);
-                console.log("MISSION ACCEPTED");
-            } else {
-                //anything else is a fail
-                socket.emit("missionTeamAccepted");
-            }
-        }
+        checkMissionApprovalVotes();
     });
 });
-
 
 
 //Create a new user
@@ -187,6 +177,25 @@ function createUser(isHost){
 
 //     socket.emit('chosenMissionUsers', users);
 // }
+
+function checkMissionApprovalVotes(){
+    var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+    if(mission.acceptMissionVotes.length == clientGame.users.length){
+        if(mission.acceptVotes > mission.rejectVotes){
+            //pass
+            socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
+            console.log("MISSION ACCEPTED");
+        } else {
+            //anything else is a fail
+            socket.emit("missionTeamAccepted");
+        }
+    }
+
+    console.log(mission.acceptMissionVotes);
+    console.log("Accept votes " + mission.acceptVotes);
+    console.log("Fail votes " + mission.rejectVotes);
+}
 
 function gameSetup(){
     var roles;

@@ -39,6 +39,7 @@ $(document).ready( function(){
             $(this).prop('disabled', true);
         }
     });
+
     $('#submitTeamSelection').click(function(){
         //functions send data to host
         socket.emit('teamSubmittedForApproval');
@@ -48,16 +49,18 @@ $(document).ready( function(){
         if($(this).val() == "Yes"){
             console.log("inside first if teamAcceptButton");
             if(clientUser.isHost){
-                clientGame.missions[clientGame.missionNumber].acceptMissionVotes.push(1);
+                clientGame.missions[clientGame.missionNumber].acceptMissionVotes.push({username:clientUser.username, vote: "Yes"});
                 clientGame.missions[clientGame.missionNumber].acceptVotes += 1;
+                checkMissionApprovalVotes();
             } else {
                 socket.emit('userTeamApprovalVote', true); 
                 console.log("inside else in teamAcceptButton");
             }
         } else {
             if(clientUser.isHost){
-                clientGame.missions[clientGame.missionNumber].acceptMissionVotes.push(0);
+                clientGame.missions[clientGame.missionNumber].acceptMissionVotes.push({username:clientUser.username, vote: "No"});
                 clientGame.missions[clientGame.missionNumber].rejectVotes += 1;
+                checkMissionApprovalVotes();
             } else {
                socket.emit('userTeamApprovalVote', false); 
             }

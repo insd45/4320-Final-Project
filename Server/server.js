@@ -29,12 +29,18 @@ io.on('connection', function(client) {
     });
 
     client.on('userTeamApprovalVote', function(vote){
-        client.to(io.sockets.adapter.rooms[client.user.room].host).emit('recievedUserTeamVote', vote);
+        console.log("User sent vote")
+        client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedUserTeamVote', vote);
     });
 
-    client.on('missionTeamAccepted', function(users){
+    client.on('emitToSpecificUsers', function(event, users){
         for(var i = 0; i < users.length; i++){
-            client.to(users[i].clientId).emit('triggerMissionVote');
+            if(users[i].clientId == client.id){
+                client.emit(event);
+            } else {
+                client.to(users[i].clientId).emit(event);
+            }
+            
             console.log("Trigger mission vote for "+users[i].username);
         }
     });
