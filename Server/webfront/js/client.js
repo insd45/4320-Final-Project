@@ -125,6 +125,8 @@ $(document).ready( function(){
         generateView();
     });
 
+    
+
     socket.on('recievedUserTeamVote', function(clientVote){
         console.log("host recieved vote");
         var mission = clientGame.missions[clientGame.missionNumber]; 
@@ -138,6 +140,19 @@ $(document).ready( function(){
         }
 
         checkMissionApprovalVotes();
+    });
+
+    socket.on('recievedMissionVote', function(vote){
+        console.log("host recieved vote");
+        var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+        if(vote == "Success"){
+            mission.passVotes += 1;       
+        } else {
+            mission.failVotes += 1;
+        }
+
+        checkMissionVotes();
     });
 });
 
@@ -191,7 +206,10 @@ function checkMissionApprovalVotes(){
             console.log("MISSION ACCEPTED");
         } else {
             //anything else is a fail
-            socket.emit("missionTeamAccepted");
+            mission.approved = false;
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
+            console.log("MISSION Failed");
         }
     }
 
@@ -199,6 +217,35 @@ function checkMissionApprovalVotes(){
     console.log("Accept votes " + mission.acceptVotes);
     console.log("Fail votes " + mission.rejectVotes);
 }
+
+
+function checkMissionVotes(){
+    var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+    if((mission.passVotes + mission.failVotes) == mission.selectedUsers.length){
+        if(mission.failVotes < mission.requiredFails){
+            //send results to users
+            //socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
+            mission.status = 1;
+            clientGame.missionNumber++;
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
+            console.log("MISSION PASSED");
+        } else {
+            //anything else is a fail
+            mission.status = 2;
+            clientGame.missionNumber++;
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
+            console.log("MISSION Failed");
+        }
+    }
+
+    console.log(mission.acceptMissionVotes);
+    console.log("Accept votes " + mission.acceptVotes);
+    console.log("Fail votes " + mission.rejectVotes);
+}
+
 
 function gameSetup(){
     var roles;
@@ -233,7 +280,7 @@ function gameSetup(){
             break;  
         default: 
             //For testing
-            missionNumbers = [3,0,0,0,0];
+            missionNumbers = [1,1,1,1,1];
             roles = ["merlin","evil","evil","assassin","evil"];
     }
 

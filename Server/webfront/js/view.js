@@ -11,6 +11,10 @@ $(document).ready( function(){
         generateUserChoiceList();
         $('#missionTeamSelect').modal('show');
     });
+
+    $('#startMissionButton').click(function(){
+        socket.emit("emitToSpecificUsers", "triggerMissionVote", clientGame.missions[clientGame.missionNumber].selectedUsers);
+    });
     
     $('#playerCardBack').on('click touch', function(){
         $('#myCharacter').modal('show');        
@@ -53,7 +57,7 @@ $(document).ready( function(){
                 clientGame.missions[clientGame.missionNumber].acceptVotes += 1;
                 checkMissionApprovalVotes();
             } else {
-                socket.emit('userTeamApprovalVote', true); 
+                socket.emit('userTeamApprovalVote', {username:clientUser.username, vote: "Yes"}); 
                 console.log("inside else in teamAcceptButton");
             }
         } else {
@@ -62,24 +66,26 @@ $(document).ready( function(){
                 clientGame.missions[clientGame.missionNumber].rejectVotes += 1;
                 checkMissionApprovalVotes();
             } else {
-               socket.emit('userTeamApprovalVote', false); 
+               socket.emit('userTeamApprovalVote', {username:clientUser.username, vote: "No"}); 
             }
         }
         $('#teamApprovalModal').modal('hide');
     });
     
     $('.missionSuccessButton').click(function(){
-        if($(this).val() == "Succeed"){
+        if($(this).val() == "Succeed" || clientUser.role == "good" || clientUser.role == "merlin"){
             if(clientUser.isHost){
                 clientGame.missions[clientGame.missionNumber].passVotes += 1;
+                checkMissionVotes();
             } else {
-               socket.emit('missionUserVote', true); 
+               socket.emit('missionUserVote', "Success");
             }
         } else {
             if(clientUser.isHost){
                 clientGame.missions[clientGame.missionNumber].failVotes += 1;
+                checkMissionVotes();
             } else {
-               socket.emit('missionUserVote', false); 
+               socket.emit('missionUserVote', "Fail"); 
             }
         }
         $('#missionVotingModal').modal('hide');
@@ -89,6 +95,12 @@ $(document).ready( function(){
 function generateUserVoteList(){
     var userString = "";
     var mission = clientGame.missions[clientGame.missionNumber];
+
+    if(mission.approved){
+        $('#teamVotingResultDialog').html("Mission Team Accepted");
+    } else {
+        $('#teamVotingResultDialog').html("Mission Team Rejected");
+    }
     
     for(var i = 0; i < mission.acceptMissionVotes.length; i++){
         if (mission.acceptMissionVotes[i].vote == "Yes") {
@@ -124,11 +136,23 @@ function generateView(){
         case 'gameScreen':
             updatePlayerCard();
             updateVoteBar();
+            updateMissionBar();
             updateMissionUserList();
             transitionScreens('#gameScreen');
-            if(clientGame.missions[clientGame.missionNumber].approved){
+
+            var mission = clientGame.missions[clientGame.missionNumber];
+            
+            if(mission.approved != null){
                 generateUserVoteList();
                 $('#teamVotingResultModal').modal("show");
+
+                if(mission.approved){
+                    if(mission.leader.clientId == clientUser.clientId){
+                        $('#startTeamSelection').hide();
+                        $('#submitTeamSelection').hide();
+                        $('#startMissionButton').show();
+                    }
+                }
             }
             break;
         default:
@@ -240,9 +264,9 @@ function updateVoteBar(){
     var voteString = "";
     for(var i = 0; i < 5; i++){
         if (clientGame.missions[i].status == 1) {
-            voteString += "<div class='vote' style='background-color:#2f3bd3;'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            voteString += "<div class='vote visibleText' style='background-color:#2f3bd3;'>"+(clientGame.missions[i].numPlayers)+"</div>";
         } else if (!clientGame.missions[i].status == 2) {
-            voteString += "<div class='vote' style='background-color:#d12525;'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            voteString += "<div class='vote visibleText' style='background-color:#d12525;'>"+(clientGame.missions[i].numPlayers)+"</div>";
         } else {
             voteString += "<div class='vote'>"+(clientGame.missions[i].numPlayers)+"</div>";
         }
@@ -252,24 +276,24 @@ function updateVoteBar(){
 
 function updateMissionBar(){
     switch(clientGame.missionNumber){
+        case 0:
+            $('#mission1').addClass("progress-bar-striped");
+            break;
         case 1:
-            $('#mission1').addClass(progress-bar-striped);
+            $('#mission2').addClass("progress-bar-striped");
+            $('#mission1').removeClass("progress-bar-striped");
             break;
         case 2:
-            $('#mission2').addClass(progress-bar-striped);
-            $('#mission1').removeClass(progress-bar-striped);
+            $('#mission3').addClass("progress-bar-striped");
+            $('#mission2').removeClass("progress-bar-striped");
             break;
         case 3:
-            $('#mission3').addClass(progress-bar-striped);
-            $('#mission2').removeClass(progress-bar-striped);
+            $('#mission4').addClass("progress-bar-striped");
+            $('#mission3').removeClass("progress-bar-striped");
             break;
         case 4:
-            $('#mission4').addClass(progress-bar-striped);
-            $('#mission3').removeClass(progress-bar-striped);
-            break;
-        case 5:
-            $('#mission5').addClass(progress-bar-striped);
-            $('#mission4').removeClass(progress-bar-striped);
+            $('#mission5').addClass("progress-bar-striped");
+            $('#mission4').removeClass("progress-bar-striped");
             break;
         default:
     } 

@@ -29,8 +29,13 @@ io.on('connection', function(client) {
     });
 
     client.on('userTeamApprovalVote', function(vote){
-        console.log("User sent vote")
+        console.log("User sent vote");
         client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedUserTeamVote', vote);
+    });
+
+    client.on('missionUserVote', function(vote){
+        console.log("User sent vote");
+        client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedMissionVote', vote);
     });
 
     client.on('emitToSpecificUsers', function(event, users){

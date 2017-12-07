@@ -21,7 +21,7 @@ function Game(host){
     this.users = [host];
     this.missions = [];
     this.disconnectedUsers = [];
-    this.missionNumber = 0;
+    this.missionNumber = 2;
     this.numFails = 0;
     this.screen = "lobbyScreen";
     this.missionSkips = 0;
@@ -34,7 +34,8 @@ function Mission(numPlayers){
     this.numPlayers = numPlayers;
     this.leader = "";
     this.status = 0;  //1 pass, 2 fail, 0 nothing 
-    this.approved = false;
+    this.approved;
+    this.requiredFails = 1;
 
     //team Voting
     this.acceptMissionVotes = [];
