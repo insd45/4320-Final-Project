@@ -11,6 +11,10 @@ $(document).ready( function(){
         generateUserChoiceList();
         $('#missionTeamSelect').modal('show');
     });
+    
+    $('#playerCardBack').on('click touch', function(){
+        $('#myCharacter').modal('show');        
+    });
 
     $('#missionUserSelectionList').on('click', '.missionSelectionItem', function(){
         var index = $(this).val();
@@ -24,7 +28,7 @@ $(document).ready( function(){
 
         if(currMissionArray.length == clientGame.missions[clientGame.missionNumber].numPlayers){
             $('#missionTeamSelect').modal('hide');
-            $('#submitTeamSelect').show();
+            $('#submitTeamSelection').show();
             if(clientUser.isHost){
                 socket.emit('syncMasterGamestate', clientGame);
                 generateView();
@@ -35,9 +39,47 @@ $(document).ready( function(){
             $(this).prop('disabled', true);
         }
     });
-    $('#submitTeamSelect').click(function(){
+    $('#submitTeamSelection').click(function(){
         //functions send data to host
         socket.emit('teamSubmittedForApproval');
+    });
+    
+    $('.teamAcceptButton').click(function(){
+        if($(this).val() == "Yes"){
+            console.log("inside first if teamAcceptButton");
+            if(clientUser.isHost){
+                clientGame.missions[clientGame.missionNumber].acceptMissionVotes.push(1);
+                clientGame.missions[clientGame.missionNumber].acceptVotes += 1;
+            } else {
+                socket.emit('userTeamApprovalVote', true); 
+                console.log("inside else in teamAcceptButton");
+            }
+        } else {
+            if(clientUser.isHost){
+                clientGame.missions[clientGame.missionNumber].acceptMissionVotes.push(0);
+                clientGame.missions[clientGame.missionNumber].rejectVotes += 1;
+            } else {
+               socket.emit('userTeamApprovalVote', false); 
+            }
+        }
+        $('#teamApprovalModal').modal('hide');
+    });
+    
+    $('.missionSuccessButton').click(function(){
+        if($(this).val() == "Succeed"){
+            if(clientUser.isHost){
+                clientGame.missions[clientGame.missionNumber].passVotes += 1;
+            } else {
+               socket.emit('missionUserVote', true); 
+            }
+        } else {
+            if(clientUser.isHost){
+                clientGame.missions[clientGame.missionNumber].failVotes += 1;
+            } else {
+               socket.emit('missionUserVote', false); 
+            }
+        }
+        $('#missionVotingModal').modal('hide');
     });
 });
 
@@ -45,6 +87,7 @@ function generateUserChoiceList(){
     $('#missionSelectionDialog').html("Leader, choose " + clientGame.missions[clientGame.missionNumber].numPlayers + " players for this mission");    
     var $userList = $('#missionUserSelectionList');
     var userListString = "";
+    
 
     for(var i = 0; i< clientGame.users.length; i++){
         userListString += "<button class='btn btn-primary missionSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";

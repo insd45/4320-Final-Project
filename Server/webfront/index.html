@@ -100,12 +100,14 @@
                    </ul>
                 </div>	
 
-                <button id="startTeamSelection" class="btn btn-primary row" style="display:none">Select Team</button>
-                <button id="submitTeamSelection" class="btn btn-primary" style="display:none">Confirm Team</button>
+                <button id="startTeamSelection" class="btn btn-primary row teamButtons" style="display:none">Select Team</button>
+                <br>
+                <br>
+                <button id="submitTeamSelection" class="btn btn-primary teamButtons" style="display:none">Confirm Team</button>
                     
                 <!-- Player Card Back -->
-                <div class="card-container">
-                    <div class="card" data-toggle="modal" data-target="#myCharacter">
+                <div id="playerCardBack" class="card-container">
+                    <div class="card">
                             <p id="playerName" class="visibleText"></p>
                     </div>	
                 </div>	
@@ -154,7 +156,7 @@
                 
               
                 <!-- Team Approval Modal -->
-                <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+                <div class="modal fade" id="teamApprovalModal" role="dialog" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
                         <!-- Modal content-->
                         <div class="modal-content">
@@ -166,8 +168,8 @@
                             <div class="modal-body">
                                 <h2>Do you approve this team?</h2>
                             
-                                <button type="button" class="btn btn-primary">Yes</button>
-                                <button type="button" class="btn btn-primary">No</button>
+                                <button type="button" class="btn btn-primary teamAcceptButton" value="Yes">Yes</button>
+                                <button type="button" class="btn btn-primary teamAcceptButton" value="No">No</button>
                                   
                             </div>
 
@@ -179,7 +181,7 @@
             
                     
                 <!-- Succes or Fail modal -->
-                <div class="modal fade" id="myModal2" role="dialog" data-backdrop="static" data-keyboard="false">
+                <div class="modal fade" id="missionVotingModal" role="dialog" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
                         <!-- Modal content-->
                         <div class="modal-content">
@@ -189,8 +191,8 @@
 
                             <div class="modal-body">
                                 <h2>Would you like this mission to Succeed or Fail?</h2>
-                                <button type="button" class="btn btn-primary">Succeed</button>
-                                <button type="button" class="btn btn-primary">Fail</button>       
+                                <button type="button" class="btn btn-primary missionSuccessButton" value="Succeed">Succeed</button>
+                                <button type="button" class="btn btn-primary missionSuccessButton" value="Fail">Fail</button>       
                             </div>
 
                             <div class="modal-footer"></div>
