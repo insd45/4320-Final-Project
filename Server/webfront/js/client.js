@@ -227,17 +227,28 @@ function checkMissionVotes(){
             //send results to users
             //socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
             mission.status = 1;
-            clientGame.missionNumber++;
+            clientGame.missionsPassed++;
             socket.emit('syncMasterGamestate', clientGame);
             generateView();
             console.log("MISSION PASSED");
         } else {
+            clientGame.missionsFailed++;
             //anything else is a fail
             mission.status = 2;
-            clientGame.missionNumber++;
             socket.emit('syncMasterGamestate', clientGame);
             generateView();
             console.log("MISSION Failed");
+        }
+
+        if(clientGame.missionNumber < 4){
+            clientGame.missionNumber++;
+        } else {
+            //game over
+            if(clientGame.missionsPassed > clientGame.missionsFailed){ //good wins
+                clientGame.gameResult = true;
+            } else {
+                clientGame.gameResult = false;                 
+            }
         }
     }
 

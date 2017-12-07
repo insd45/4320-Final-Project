@@ -154,6 +154,14 @@ function generateView(){
                     }
                 }
             }
+
+            if(clientGame.gameResult != null){
+                if(clientGame){
+                    console.log("GOOD WINS");
+                } else {
+                    console.log("EVIL WINS");
+                }
+            }
             break;
         default:
     }

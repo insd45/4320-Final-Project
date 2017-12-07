@@ -25,7 +25,10 @@ function Game(host){
     this.numFails = 0;
     this.screen = "lobbyScreen";
     this.missionSkips = 0;
-    this.gameResults;
+    this.gameResult;
+
+    this.missionsPassed = 0;
+    this.missionsFailed = 0;
 }
 
 
