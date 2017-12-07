@@ -110,6 +110,10 @@ $(document).ready( function(){
         console.log(clientUser);
     });
 
+    socket.on('startVoteOnTeam', function(user){
+        $('#teamApprovalModal').modal('show');
+    });
+
     //host game functions
     socket.on('updateMissionUsers', function(users){
         clientGame.missions[clientGame.missionNumber].selectedUsers = users;
