@@ -86,6 +86,21 @@ $(document).ready( function(){
     });
 });
 
+function generateUserVoteList(){
+    var userString = "";
+    var mission = clientGame.missions[clientGame.missionNumber];
+    
+    for(var i = 0; i < mission.acceptMissionVotes.length; i++){
+        if (mission.acceptMissionVotes[i].vote == "Yes") {
+            userString += "<li class='list-group-item list-group-item-success'>"+ mission.acceptMissionVotes[i].username +"</li>";
+        } else {
+            userString += "<li class='list-group-item list-group-item-danger'>"+ mission.acceptMissionVotes[i].username +"</li>";
+        }
+    }
+    
+    $('#teamVotingResultList').html(userString);
+}
+
 function generateUserChoiceList(){
     $('#missionSelectionDialog').html("Leader, choose " + clientGame.missions[clientGame.missionNumber].numPlayers + " players for this mission");    
     var $userList = $('#missionUserSelectionList');
@@ -111,6 +126,10 @@ function generateView(){
             updateVoteBar();
             updateMissionUserList();
             transitionScreens('#gameScreen');
+            if(clientGame.missions[clientGame.missionNumber].approved){
+                generateUserVoteList();
+                $('#teamVotingResultModal').modal("show");
+            }
             break;
         default:
     }
