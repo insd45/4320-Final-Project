@@ -24,7 +24,8 @@ io.on('connection', function(client) {
     });
 
     client.on('teamSubmittedForApproval', function(game){
-        client.in(client.user.room).emit('startVoteOnTeam');
+        client.emit('startVoteOnTeam');
+        client.to(client.user.room).emit('startVoteOnTeam');
     });
 
     //sync user object to user
