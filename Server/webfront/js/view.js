@@ -24,6 +24,7 @@ $(document).ready( function(){
 
         if(currMissionArray.length == clientGame.missions[clientGame.missionNumber].numPlayers){
             $('#missionTeamSelect').modal('hide');
+            $('#submitTeamSelect').show();
             if(clientUser.isHost){
                 socket.emit('syncMasterGamestate', clientGame);
                 generateView();
@@ -33,6 +34,10 @@ $(document).ready( function(){
         } else {
             $(this).prop('disabled', true);
         }
+    });
+    $('#submitTeamSelect').click(function(){
+        //functions send data to host
+        socket.emit('teamSubmittedForApproval');
     });
 });
 
