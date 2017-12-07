@@ -34,7 +34,8 @@ io.on('connection', function(client) {
 
     client.on('missionTeamAccepted', function(users){
         for(var i = 0; i < users.length; i++){
-            client.to(user.clientId).emit('triggerMissionVote');
+            client.to(users[i].clientId).emit('triggerMissionVote');
+            console.log("Trigger mission vote for "+users[i].username);
         }
     });
 
