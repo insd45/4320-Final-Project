@@ -28,6 +28,16 @@ io.on('connection', function(client) {
         client.to(client.user.room).emit('startVoteOnTeam');
     });
 
+    client.on('userTeamApprovalVote', function(vote){
+        client.to(io.sockets.adapter.rooms[client.user.room].host).emit('recievedUserTeamVote', vote);
+    });
+
+    client.on('missionTeamAccepted', function(users){
+        for(var i = 0; i < users.length; i++){
+            client.to(user.clientId).emit('triggerMissionVote');
+        }
+    });
+
     //sync user object to user
     client.on('syncUser', function(user){
         if(user.clientId == client.id){
