@@ -183,8 +183,11 @@ function checkMissionApprovalVotes(){
     
     if(mission.acceptMissionVotes.length == clientGame.users.length){
         if(mission.acceptVotes > mission.rejectVotes){
-            //pass
-            socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
+            //send results to users
+            //socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
+            mission.approved = true;
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
             console.log("MISSION ACCEPTED");
         } else {
             //anything else is a fail

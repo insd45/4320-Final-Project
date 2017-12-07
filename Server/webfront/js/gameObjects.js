@@ -34,6 +34,7 @@ function Mission(numPlayers){
     this.numPlayers = numPlayers;
     this.leader = "";
     this.status = 0;  //1 pass, 2 fail, 0 nothing 
+    this.approved = false;
 
     //team Voting
     this.acceptMissionVotes = [];
