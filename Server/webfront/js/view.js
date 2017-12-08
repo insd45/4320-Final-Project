@@ -10,16 +10,26 @@ $(document).ready( function(){
         clientGame.missions[clientGame.missionNumber].selectedUsers = [];
         generateUserChoiceList();
         $('#missionTeamSelect').modal('show');
+        // if(clientGame.mission[clientGame.missionNumber].leader.clientId == clientUser.clientId){
+            
+        // } 
     });
 
     $('#startMissionButton').click(function(){
+        // if(clientGame.mission[missionNumber].leader.clientId == clientUser.clientId){
+            
+        // }
+
+        $(this).hide();
         socket.emit("emitToSpecificUsers", "triggerMissionVote", clientGame.missions[clientGame.missionNumber].selectedUsers);
     });
     
+    //player card icon
     $('#playerCardBack').on('click touch', function(){
         $('#myCharacter').modal('show');        
     });
 
+    //selection for users going on mission
     $('#missionUserSelectionList').on('click', '.missionSelectionItem', function(){
         var index = $(this).val();
         var user = {username: clientGame.users[index].username, clientId: clientGame.users[index].clientId};
@@ -44,6 +54,7 @@ $(document).ready( function(){
         }
     });
 
+    //selection for merlin assassination attempt
     $('#assassinSelectionList').on('click', '.assassinSelectionItem', function(){
         var index = $(this).val();
         
@@ -56,6 +67,60 @@ $(document).ready( function(){
             endGame(clientGame.gameResult);
         } else {
             socket.emit('gameResult', clientGame.gameResult);
+        }
+    });
+
+     //mission details
+     $('.quest').on('click', function(){
+        var missionId = $(this).text();
+        var missionNum;
+        console.log("MISSION ID: " + missionId);
+        
+        switch(missionId){
+            case 'Quest 1':
+                missionNum = 0;
+                break;
+            case 'Quest 2':
+                missionNum = 1;
+                break;
+            case 'Quest 3':
+                missionNum = 2;
+                break;
+            case 'Quest 4':
+                missionNum = 3;
+                break;
+            case 'Quest 5':
+                missionNum = 4;
+                break;
+            default:
+                missionNum = 0;
+        }
+
+        console.log('Mission Number ' + missionNum);
+        var mission = clientGame.missions[missionNum];
+        var playerList = "";
+
+        if(mission.status != 0){
+            console.log("Mission already completed");
+            $('#missionInfoTitle').html("Mission " + (missionNum+1) + " Details");
+            
+            if(mission.status == 1){
+                $('#missionInfoResult').html("Mission Passed");
+            } else {
+                $('#missionInfoResult').html("Mission Failed");
+            }
+            
+            $('#missionInfoFail').html("Number of Fails = "+mission.failVotes);
+            $('#missionInfoSuccess').html("Number of Successes = "+mission.passVotes);
+
+            for(var i = 0; i < mission.selectedUsers.length; i++){
+                playerList += "<li class='list-group-item'>"+ mission.selectedUsers[i].username +"</li>"
+            }
+            $('#missionInfoUserList').html(playerList);
+
+            $('#missionInfoModal').modal('show');
+        } else {
+            console.log('mission not yet completed');
         }
     });
 
@@ -206,11 +271,11 @@ function generateView(){
             break;
 
         case 'goodWinScreen':
-            $('html').html("<h1 class='text-center'>Good wins!</h1>");
+            transitionScreens('#goodWinScreen');
             break;
 
         case 'evilWinScreen':
-            $('html').html("<h1 class='text-center'>Evil wins!</h1>");
+            transitionScreens('#evilWinScreen');
             break;
         default:
     }

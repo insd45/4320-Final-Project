@@ -61,7 +61,7 @@
             </div>
 
             
-            <div id="gameScreen" style="display:none;">
+            <div id="gameScreen" class="gameScreen" style="display:none;">
                     
                 <div class="text-center">
                 
@@ -71,26 +71,16 @@
                     </div>
                 </div>
                         
-                <div class="progress" data-toggle="modal" data-target="#assassinModal">
-                    <div id="mission1" class="progress-bar quest active visibleText" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                        Quest 1
-                    </div>
+                <div id="missionProgressBars" class="progress">
+                    <div id="mission1" value="0" class="progress-bar quest active visibleText" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Quest 1</div>
                     
-                    <div id="mission2" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                        Quest 2
-                    </div>
+                    <div id="mission2" value="1" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Quest 2</div>
                     
-                    <div id="mission3" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
-                        Quest 3
-                    </div>
+                    <div id="mission3" value="2" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >Quest 3</div>
                     
-                    <div id="mission4" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >
-                        Quest 4
-                    </div>
+                    <div id="mission4" value="3" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" >Quest 4</div>
                     
-                    <div id="mission5" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                        Quest 5
-                    </div>
+                    <div id="mission5" value="4" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Quest 5</div>
                     
                 </div>
 
@@ -140,7 +130,7 @@
                             </div>
 
                             <div class="modal-body">
-                                <h4 id="missionSelectionDialog">Leader, select players</h5>
+                                <h4 id="missionSelectionDialog">Leader, select players</h4>
                             </div>
 
                             <div id="missionUserSelectionList" class="modal-body text-center btn-group-vertical col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -190,10 +180,35 @@
                             </div>
 
                             <div class="modal-body">
-                                <h4 id="teamVotingResultDialog">Mission has (passed/failed)</h5>
+                                <h4 id="teamVotingResultDialog">Mission has (passed/failed)</h4>
                             </div>
 
                             <ul id="teamVotingResultList" class="list-group">
+                            </ul>
+
+                            <div class="modal-footer"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Info Modal -->
+                <div id="missionInfoModal" class="modal fade"  role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 id="missionInfoTitle" class="modal-title"></h3>
+                            </div>
+
+                            <div class="modal-body">
+                                <h5 id="missionInfoResult">Mission (passed/failed)</h5>
+                                <p id="missionInfoSuccess"></p>
+                                <p id="missionInfoFail"></p>
+                                
+                            </div>
+                            <p>Users selected for this mission:</p>
+
+                            <ul id="missionInfoUserList" class="list-group">
                             </ul>
 
                             <div class="modal-footer"></div>
@@ -248,6 +263,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="goodWinScreen" class="gameScreen container" style="display:none;">
+                <h1 class="text-center visibleText">Good Wins!</h1>
+            </div>
+
+            <div id="evilWinScreen" class="gameScreen container" style="display:none;">
+                <h1 class="text-center visibleText">Evil Wins!</h1>
             </div>
 
         </div>

@@ -25,7 +25,7 @@ io.on('connection', function(client) {
 
     client.on('emitToSpecificClient', function(event, userId){
         console.log("emitting to specific client " + event);
-        if(client.id = userId){
+        if(client.id == userId){
             client.emit(event);
         } else {
             client.to(userId).emit(event);            
