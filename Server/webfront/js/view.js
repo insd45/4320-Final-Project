@@ -44,6 +44,21 @@ $(document).ready( function(){
         }
     });
 
+    $('#assassinSelectionList').on('click', '.assassinSelectionItem', function(){
+        var index = $(this).val();
+        
+        if(clientGame.users[index].role == "merlin"){
+            //THIS IS THE LAST PART OF THE GAME
+            clientGame.gameResult = false; //evil wins
+        }
+
+        if(clientUser.isHost){
+            endGame(clientGame.gameResult);
+        } else {
+            socket.emit('gameResult', clientGame.gameResult);
+        }
+    });
+
     $('#submitTeamSelection').click(function(){
         //functions send data to host
         socket.emit('teamSubmittedForApproval');
@@ -134,7 +149,7 @@ function generateAssassinChoiceList(){
 
     for(var i = 0; i< clientGame.users.length; i++){
         if(clientGame.users[i].role == "merlin" || clientGame.users[i].role == "good"){
-            userListString += "<button class='btn btn-primary missionSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
+            userListString += "<button class='btn btn-primary assassinSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
         }
     }
 
@@ -188,6 +203,14 @@ function generateView(){
                     console.log("EVIL WINS");
                 }
             }
+            break;
+
+        case 'goodWinScreen':
+            $('html').html("<h1 class='text-center'>Good wins!</h1>");
+            break;
+
+        case 'evilWinScreen':
+            $('html').html("<h1 class='text-center'>Evil wins!</h1>");
             break;
         default:
     }

@@ -22,7 +22,7 @@ function Game(host){
     this.missions = [];
     this.disconnectedUsers = [];
     this.missionNumber = 0;
-    this.numFails = 0;
+    this.numMissionRejects = 0;
     this.screen = "lobbyScreen";
     this.missionSkips = 0;
     this.gameResult;

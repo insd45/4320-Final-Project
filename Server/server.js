@@ -23,9 +23,23 @@ io.on('connection', function(client) {
         client.to(client.user.room).emit('syncGamestate', game);
     });
 
+    client.on('emitToSpecificClient', function(event, userId){
+        console.log("emitting to specific client " + event);
+        if(client.id = userId){
+            client.emit(event);
+        } else {
+            client.to(userId).emit(event);            
+        }
+    });
+
     client.on('teamSubmittedForApproval', function(game){
         client.emit('startVoteOnTeam');
         client.to(client.user.room).emit('startVoteOnTeam');
+    });
+
+    client.on('gameResult', function(result){
+        console.log("User sent vote");
+        client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('endGame', result);
     });
 
     client.on('userTeamApprovalVote', function(vote){

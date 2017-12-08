@@ -118,6 +118,13 @@ $(document).ready( function(){
         $('#missionVotingModal').modal('show');
     });
 
+    socket.on('attemptAssassination', function(){
+        console.log("USER SHOULD SEE ASSASSINATION MODAL");
+        $('#assassinModal').modal('show');
+    });
+
+    
+
     //host game functions
     socket.on('updateMissionUsers', function(users){
         clientGame.missions[clientGame.missionNumber].selectedUsers = users;
@@ -125,7 +132,9 @@ $(document).ready( function(){
         generateView();
     });
 
-    
+    socket.on('endGame', function(result){
+        endGame(result);
+    });
 
     socket.on('recievedUserTeamVote', function(clientVote){
         console.log("host recieved vote");
@@ -193,6 +202,17 @@ function createUser(isHost){
 //     socket.emit('chosenMissionUsers', users);
 // }
 
+function endGame(result){
+    if(result){
+        clientGame.screen = 'goodWinScreen';
+    } else {
+        clientGame.screen = 'evilWinScreen';
+    }
+
+    socket.emit('syncMasterGamestate', clientGame);
+    generateView();
+}
+
 function checkMissionApprovalVotes(){
     var mission = clientGame.missions[clientGame.missionNumber]; 
     
@@ -205,6 +225,8 @@ function checkMissionApprovalVotes(){
             generateView();
             console.log("MISSION ACCEPTED");
         } else {
+            clientGame.numMissionRejects++;
+
             clientGame.leaderIndex++;
 
             if(clientGame.leaderIndex >= clientGame.users.length){
@@ -255,14 +277,27 @@ function checkMissionVotes(){
         }
         clientGame.missions[clientGame.missionNumber + 1].leader = clientGame.users[clientGame.leaderIndex];
 
+        //END GAME
         if(clientGame.missionNumber < 4 && clientGame.missionsPassed < 3 && clientGame.missionsFailed < 3){
             clientGame.missionNumber++;
         } else {
             //game over
             if(clientGame.missionsPassed > clientGame.missionsFailed){ //good wins
                 clientGame.gameResult = true;
+
+                var assassin;
+                
+                for(var i=0; i<clientGame.users.length; i++){
+                    if(clientGame.users[i].role == "assassin"){
+                        assassin = clientGame.users[i];
+                    }
+                }
+
+                socket.emit('emitToSpecificClient', 'attemptAssassination', assassin.clientId);
+
             } else {
-                clientGame.gameResult = false;                 
+                clientGame.gameResult = false;    
+                endGame(clientGame.gameResult);
             }
         }
 
@@ -338,6 +373,8 @@ function gameSetup(){
     //     leader++;
     // }
 }
+
+
 
 
 function shuffle(a) {
