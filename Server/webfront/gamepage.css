@@ -42,8 +42,10 @@ body {
 }
 
 .card-container {
-    margin-top: 10%;
-	width: 100%;
+	position: fixed;
+    bottom: 10px;
+    left: 10px;
+	/* width: 100%; */
 }
 
 #avalonLogo {
@@ -88,7 +90,10 @@ body {
 	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
-
+.teamButtons{
+    text-align: center;
+    margin: 4px;
+}
 
 
 
@@ -129,8 +134,8 @@ body {
 
 	
 	.playerCard{
-		height: 420px;
-		width: 280px;
+		height: 315px;
+		width: 210px;
 	}
 	
 	

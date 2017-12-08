@@ -23,6 +23,33 @@ io.on('connection', function(client) {
         client.to(client.user.room).emit('syncGamestate', game);
     });
 
+    client.on('teamSubmittedForApproval', function(game){
+        client.emit('startVoteOnTeam');
+        client.to(client.user.room).emit('startVoteOnTeam');
+    });
+
+    client.on('userTeamApprovalVote', function(vote){
+        console.log("User sent vote");
+        client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedUserTeamVote', vote);
+    });
+
+    client.on('missionUserVote', function(vote){
+        console.log("User sent vote");
+        client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedMissionVote', vote);
+    });
+
+    client.on('emitToSpecificUsers', function(event, users){
+        for(var i = 0; i < users.length; i++){
+            if(users[i].clientId == client.id){
+                client.emit(event);
+            } else {
+                client.to(users[i].clientId).emit(event);
+            }
+            
+            console.log("Trigger mission vote for "+users[i].username);
+        }
+    });
+
     //sync user object to user
     client.on('syncUser', function(user){
         if(user.clientId == client.id){
@@ -35,6 +62,11 @@ io.on('connection', function(client) {
     client.on('startGame', function(){
         console.log("Room " + client.user.room + " has started the game");
         io.sockets.adapter.rooms[client.user.room].isInProgress = true;
+    });
+
+    client.on('chosenMissionUsers', function(users){
+        var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
+        client.to(host).emit('updateMissionUsers', users);
     });
 
     //host setup

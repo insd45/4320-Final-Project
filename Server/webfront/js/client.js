@@ -1,7 +1,7 @@
 /* Game Controller */
 
 var socket = io();
-const MIN_PLAYERS = 2;
+const MIN_PLAYERS = 1;
 var clientUser;
 var clientGame;
 
@@ -109,8 +109,52 @@ $(document).ready( function(){
         console.log("Update user");
         console.log(clientUser);
     });
-});
 
+    socket.on('startVoteOnTeam', function(user){
+        $('#teamApprovalModal').modal('show');
+    });
+
+    socket.on('triggerMissionVote', function(){
+        $('#missionVotingModal').modal('show');
+    });
+
+    //host game functions
+    socket.on('updateMissionUsers', function(users){
+        clientGame.missions[clientGame.missionNumber].selectedUsers = users;
+        socket.emit('syncMasterGamestate', clientGame);
+        generateView();
+    });
+
+    
+
+    socket.on('recievedUserTeamVote', function(clientVote){
+        console.log("host recieved vote");
+        var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+        if(clientVote.vote == "Yes"){
+            mission.acceptMissionVotes.push(clientVote);
+            mission.acceptVotes += 1;        
+        } else {
+            mission.acceptMissionVotes.push(clientVote);
+            mission.rejectVotes += 1;
+        }
+
+        checkMissionApprovalVotes();
+    });
+
+    socket.on('recievedMissionVote', function(vote){
+        console.log("host recieved vote");
+        var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+        if(vote == "Success"){
+            mission.passVotes += 1;       
+        } else {
+            mission.failVotes += 1;
+        }
+
+        checkMissionVotes();
+    });
+});
 
 
 //Create a new user
@@ -136,6 +180,101 @@ function createUser(isHost){
 }
 
 /* Game Specific functions */
+
+// function submitUsers(){
+//     var selectableUsers = clientGame.users;
+//     var users = [];
+
+//     for(var i = 0; i < clientGame.missions[clientGame.missionNumber]; i++){
+//         //handle user selection from view
+//     }
+
+
+//     socket.emit('chosenMissionUsers', users);
+// }
+
+function checkMissionApprovalVotes(){
+    var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+    if(mission.acceptMissionVotes.length == clientGame.users.length){
+        if(mission.acceptVotes > mission.rejectVotes){
+            //send results to users
+            //socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
+            mission.approved = true;
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
+            console.log("MISSION ACCEPTED");
+        } else {
+            clientGame.leaderIndex++;
+
+            if(clientGame.leaderIndex >= clientGame.users.length){
+                clientGame.leaderIndex = 0;
+            }
+
+            mission.leader = clientGame.users[clientGame.leaderIndex];
+            mission.acceptVotes = 0;
+            mission.rejectVotes = 0;
+            mission.selectedUsers = [];
+
+            mission.approved = false;
+            socket.emit('syncMasterGamestate', clientGame);
+            generateView();
+            console.log("MISSION REJECTED");
+        }
+    }
+
+    console.log(mission.acceptMissionVotes);
+    console.log("Accept votes " + mission.acceptVotes);
+    console.log("Fail votes " + mission.rejectVotes);
+}
+
+
+function checkMissionVotes(){
+    var mission = clientGame.missions[clientGame.missionNumber]; 
+    
+    if((mission.passVotes + mission.failVotes) == mission.selectedUsers.length){
+        if(mission.failVotes < mission.requiredFails){
+            //send results to users
+            //socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
+            mission.status = 1;
+            mission.approved = null;
+            clientGame.missionsPassed++;
+            console.log("MISSION PASSED");
+        } else {
+            clientGame.missionsFailed++;
+            //anything else is a fail
+            mission.approved = null;            
+            mission.status = 2;
+            
+            console.log("MISSION Failed");
+        }
+
+        clientGame.leaderIndex++;
+        if(clientGame.leaderIndex >= clientGame.users.length){
+            clientGame.leaderIndex = 0;
+        }
+        clientGame.missions[clientGame.missionNumber + 1].leader = clientGame.users[clientGame.leaderIndex];
+
+        if(clientGame.missionNumber < 4 && clientGame.missionsPassed < 3 && clientGame.missionsFailed < 3){
+            clientGame.missionNumber++;
+        } else {
+            //game over
+            if(clientGame.missionsPassed > clientGame.missionsFailed){ //good wins
+                clientGame.gameResult = true;
+            } else {
+                clientGame.gameResult = false;                 
+            }
+        }
+
+        socket.emit('syncMasterGamestate', clientGame);
+        generateView();
+    }
+
+    console.log(mission.acceptMissionVotes);
+    console.log("Accept votes " + mission.acceptVotes);
+    console.log("Fail votes " + mission.rejectVotes);
+}
+
 
 function gameSetup(){
     var roles;
@@ -169,7 +308,8 @@ function gameSetup(){
             roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
             break;  
         default: 
-            missionNumbers = [2,3,2,3,3];        
+            //For testing
+            missionNumbers = [1,1,1,1,1];
             roles = ["merlin","evil","evil","assassin","evil"];
     }
 
@@ -185,16 +325,18 @@ function gameSetup(){
 
     //assign leaders for missions
     leader = Math.floor(Math.random() * (clientGame.users.length));
-    clientGame.users[leader].isLeader = true;
+    //clientGame.users[leader].isLeader = true;
     console.log("LEADER INDEX = " + leader);
+    clientGame.leaderIndex = leader;
+    clientGame.missions[0].leader = clientGame.users[leader];
 
-    for(var i = 0; i < clientGame.missions.length; i++){
-        if(leader == clientGame.users.length){
-            leader = 0;
-        }
-        clientGame.missions[i].leader = clientGame.users[leader];
-        leader++;
-    }
+    // for(var i = 0; i < clientGame.missions.length; i++){
+    //     if(leader == clientGame.users.length){
+    //         leader = 0;
+    //     }
+    //     clientGame.missions[i].leader = clientGame.users[leader];
+    //     leader++;
+    // }
 }
 
 

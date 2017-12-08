@@ -65,4 +65,12 @@ Starting Game
 
 Voting
 - Game fully set up, host clicks start game, game begins
-    * First leader is shown user selection screen, gets list of users, asked to choose players one at a time 
+    * First leader is shown user selection screen, gets list of users, asked to choose players one at a time
+        until mission number is reached
+    * tentative user list is submitted to server by leader
+    - tentaive user list is recieved, sumbitted to host
+    
+- Host recieves tentative user list
+    * host adds user to mission
+    * host syncs game object to users
+    * host generates view 
