@@ -71,7 +71,7 @@ $(document).ready( function(){
     });
 
      //mission details
-     $('.quest').on('click', function(){
+     $('.quest').on('click touch', function(){
         var missionId = $(this).text();
         var missionNum;
         console.log("MISSION ID: " + missionId);
