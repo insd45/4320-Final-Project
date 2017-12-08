@@ -21,11 +21,12 @@ function Game(host){
     this.users = [host];
     this.missions = [];
     this.disconnectedUsers = [];
-    this.missionNumber = 2;
+    this.missionNumber = 0;
     this.numFails = 0;
     this.screen = "lobbyScreen";
     this.missionSkips = 0;
     this.gameResult;
+    this.leaderIndex;
 
     this.missionsPassed = 0;
     this.missionsFailed = 0;

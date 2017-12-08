@@ -205,11 +205,21 @@ function checkMissionApprovalVotes(){
             generateView();
             console.log("MISSION ACCEPTED");
         } else {
-            //anything else is a fail
+            clientGame.leaderIndex++;
+
+            if(clientGame.leaderIndex >= clientGame.users.length){
+                clientGame.leaderIndex = 0;
+            }
+
+            mission.leader = clientGame.users[clientGame.leaderIndex];
+            mission.acceptVotes = 0;
+            mission.rejectVotes = 0;
+            mission.selectedUsers = [];
+
             mission.approved = false;
             socket.emit('syncMasterGamestate', clientGame);
             generateView();
-            console.log("MISSION Failed");
+            console.log("MISSION REJECTED");
         }
     }
 
@@ -227,20 +237,25 @@ function checkMissionVotes(){
             //send results to users
             //socket.emit("emitToSpecificUsers", "triggerMissionVote", mission.selectedUsers);
             mission.status = 1;
+            mission.approved = null;
             clientGame.missionsPassed++;
-            socket.emit('syncMasterGamestate', clientGame);
-            generateView();
             console.log("MISSION PASSED");
         } else {
             clientGame.missionsFailed++;
             //anything else is a fail
+            mission.approved = null;            
             mission.status = 2;
-            socket.emit('syncMasterGamestate', clientGame);
-            generateView();
+            
             console.log("MISSION Failed");
         }
 
-        if(clientGame.missionNumber < 4){
+        clientGame.leaderIndex++;
+        if(clientGame.leaderIndex >= clientGame.users.length){
+            clientGame.leaderIndex = 0;
+        }
+        clientGame.missions[clientGame.missionNumber + 1].leader = clientGame.users[clientGame.leaderIndex];
+
+        if(clientGame.missionNumber < 4 && clientGame.missionsPassed < 3 && clientGame.missionsFailed < 3){
             clientGame.missionNumber++;
         } else {
             //game over
@@ -250,6 +265,9 @@ function checkMissionVotes(){
                 clientGame.gameResult = false;                 
             }
         }
+
+        socket.emit('syncMasterGamestate', clientGame);
+        generateView();
     }
 
     console.log(mission.acceptMissionVotes);
@@ -307,16 +325,18 @@ function gameSetup(){
 
     //assign leaders for missions
     leader = Math.floor(Math.random() * (clientGame.users.length));
-    clientGame.users[leader].isLeader = true;
+    //clientGame.users[leader].isLeader = true;
     console.log("LEADER INDEX = " + leader);
+    clientGame.leaderIndex = leader;
+    clientGame.missions[0].leader = clientGame.users[leader];
 
-    for(var i = 0; i < clientGame.missions.length; i++){
-        if(leader == clientGame.users.length){
-            leader = 0;
-        }
-        clientGame.missions[i].leader = clientGame.users[leader];
-        leader++;
-    }
+    // for(var i = 0; i < clientGame.missions.length; i++){
+    //     if(leader == clientGame.users.length){
+    //         leader = 0;
+    //     }
+    //     clientGame.missions[i].leader = clientGame.users[leader];
+    //     leader++;
+    // }
 }
 
 

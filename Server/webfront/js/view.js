@@ -47,6 +47,7 @@ $(document).ready( function(){
     $('#submitTeamSelection').click(function(){
         //functions send data to host
         socket.emit('teamSubmittedForApproval');
+        $(this).hide();
     });
     
     $('.teamAcceptButton').click(function(){
@@ -152,7 +153,17 @@ function generateView(){
                         $('#submitTeamSelection').hide();
                         $('#startMissionButton').show();
                     }
+                } else {
+                    mission.acceptMissionVotes = [];
+                    mission.approved = null;
                 }
+              
+            }
+
+            if(mission.leader.clientId != clientUser.clientId){
+                $('#startTeamSelection').hide();
+                $('#submitTeamSelection').hide();
+                $('#startMissionButton').hide();
             }
 
             if(clientGame.gameResult != null){
@@ -273,7 +284,7 @@ function updateVoteBar(){
     for(var i = 0; i < 5; i++){
         if (clientGame.missions[i].status == 1) {
             voteString += "<div class='vote visibleText' style='background-color:#2f3bd3;'>"+(clientGame.missions[i].numPlayers)+"</div>";
-        } else if (!clientGame.missions[i].status == 2) {
+        } else if (clientGame.missions[i].status == 2) {
             voteString += "<div class='vote visibleText' style='background-color:#d12525;'>"+(clientGame.missions[i].numPlayers)+"</div>";
         } else {
             voteString += "<div class='vote'>"+(clientGame.missions[i].numPlayers)+"</div>";
