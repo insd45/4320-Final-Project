@@ -127,6 +127,20 @@ function generateUserChoiceList(){
     $userList.html(userListString);
 }
 
+function generateAssassinChoiceList(){    
+    var $userList = $('#assassinSelectionList');
+    var userListString = "";
+    
+
+    for(var i = 0; i< clientGame.users.length; i++){
+        if(clientGame.users[i].role == "merlin" || clientGame.users[i].role == "good"){
+            userListString += "<button class='btn btn-primary missionSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
+        }
+    }
+
+    $userList.html(userListString);
+}
+
 
 function generateView(){
     switch(clientGame.screen){
@@ -136,6 +150,7 @@ function generateView(){
             break;
         case 'gameScreen':
             updatePlayerCard();
+            generateAssassinChoiceList();
             updateVoteBar();
             updateMissionBar();
             updateMissionUserList();
