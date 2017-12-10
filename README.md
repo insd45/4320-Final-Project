@@ -2,12 +2,12 @@
 #### 4320-Final-Project
 ---
 # Team Members
--Alex Brooks
--Austin Sizemore
--Ian Smith
--Jacob Krajewski
--Joseph Frank
--Nathan Schlechte
+- Alex Brooks
+- Austin Sizemore
+- Ian Smith
+- Jacob Krajewski
+- Joseph Frank
+- Nathan Schlechte
 
 # Where to play
 [Click Here to Play](https://josephmfrank.com)
