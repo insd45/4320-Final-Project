@@ -71,10 +71,10 @@ There is a UML diagram and SQL statements for a potential database that can stor
 - Alex Brooks
 
 # Screen Shot
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0418.png | width=100)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0419.png | width=100)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0420.png | width=100)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0421.png | width=100)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0423.png | width=100)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0424.png | width=100)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0425.png | width=100)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0418.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0419.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0420.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0421.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0423.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0424.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0425.png)
