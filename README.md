@@ -45,3 +45,17 @@ View.js uses javascript and socket.io to implement the main aspects of the game.
 Index.html and the CSS is used to create a user friendly UI and overall experience.  The traditional game board was reimagined when adapting it for the web.  The 5 circles at the top show the success of each mission and how many players are to go on the mission.  The Quest bar below displays the current mission and the player can select on pass missions to view the results.  Finally, in the bottom left there is the player card which displays your current identity and any other information that comes with being that character.
 
 There is a UML diagram and SQL statements for a potential database that can store user data such as their username and password.  This database did not make this release but is planned to be included in a future release.
+
+# Team Contributions
+
+### Alex Brooks
+
+### Austin Sizemore
+
+### Ian Smith
+
+### Jacob Krajewski
+
+### Joey Frank
+
+### Nathan Schlechte
