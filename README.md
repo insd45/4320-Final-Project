@@ -9,7 +9,7 @@
 # Rules
 
 [Official Rules](http://www.skiptherulebook.com/2016/09/18/avalon/)
-Note: our version of the game only utilies the Merlin and Assassin character cards
+Note: our version of the game only utilizes the Merlin and Assassin character cards
 
 Avalon is a 5-10 player card game with 2 different opposing sides. The number of good and evil players depends on how many overall players there are.
 
@@ -40,4 +40,8 @@ The first team to achieve 3 quests towards their alignment wins. However, if the
 Good luck, and have fun deceiving your friends!
 
 # Implementation
+View.js uses javascript and socket.io to implement the main aspects of the game.  These functions act as the “rules” to the game.  Some basic methods include checking whether a majority of the votes either passed or failed a mission.  Other functions handle modal’s and when they are to be displayed or hidden.
 
+Index.html and the CSS is used to create a user friendly UI and overall experience.  The traditional game board was reimagined when adapting it for the web.  The 5 circles at the top show the success of each mission and how many players are to go on the mission.  The Quest bar below displays the current mission and the player can select on pass missions to view the results.  Finally, in the bottom left there is the player card which displays your current identity and any other information that comes with being that character.
+
+There is a UML diagram and SQL statements for a potential database that can store user data such as their username and password.  This database did not make this release but is planned to be included in a future release.
