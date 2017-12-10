@@ -22,6 +22,7 @@ $(document).ready( function(){
         }
     });
 
+    //start the game
     $('#startButton').click( function(){
         if(clientUser.isHost && clientGame.users.length >= MIN_PLAYERS){
             gameSetup();
@@ -44,12 +45,14 @@ $(document).ready( function(){
 
      /* Lobby events */
 
+    //displays error from server
     socket.on('connectError', function(message){
         console.log(message);
         errorScreen(message);
     });
 
 
+    //update game data from host
     socket.on('syncGamestate', function(game){
         clientGame = game;
         console.log("Syncing Gamestate");
@@ -59,6 +62,7 @@ $(document).ready( function(){
 
     //host specific events
 
+    //set up host item, create master game object
     socket.on('hostSetup', function(user){
         console.log("Made it to host setup");
         clientUser = user;
@@ -67,7 +71,7 @@ $(document).ready( function(){
         generateView();
     });
 
-
+    //add new user to game
     socket.on('userJoined', function(user){
         console.log(user.username + "Joined, userJoined event");
         //client recieves completed user object
@@ -88,7 +92,7 @@ $(document).ready( function(){
         }
     });
 
-
+    //remove user from game
     socket.on('userLeft', function(user){
         console.log(user.username + ' Left the game');
         var index = clientGame.users.findIndex(i => i.clientId == user.clientId);
@@ -104,26 +108,29 @@ $(document).ready( function(){
 
 
     /* Game Events */
+
+    //update user object from server
     socket.on('updateUser', function(user){
         clientUser = user;
         console.log("Update user");
         console.log(clientUser);
     });
 
+    //begin team vote
     socket.on('startVoteOnTeam', function(user){
         $('#teamApprovalModal').modal('show');
     });
 
+    //begin mission vote
     socket.on('triggerMissionVote', function(){
         $('#missionVotingModal').modal('show');
     });
 
+    //allow assassin to choose merlin
     socket.on('attemptAssassination', function(){
         console.log("USER SHOULD SEE ASSASSINATION MODAL");
         $('#assassinModal').modal('show');
     });
-
-    
 
     //host game functions
     socket.on('updateMissionUsers', function(users){
@@ -132,10 +139,12 @@ $(document).ready( function(){
         generateView();
     });
 
+    //end the game
     socket.on('endGame', function(result){
         endGame(result);
     });
 
+    //add approve/reject vote to game
     socket.on('recievedUserTeamVote', function(clientVote){
         console.log("host recieved vote");
         var mission = clientGame.missions[clientGame.missionNumber]; 
@@ -151,6 +160,7 @@ $(document).ready( function(){
         checkMissionApprovalVotes();
     });
 
+    //add pass/fail vote to game
     socket.on('recievedMissionVote', function(vote){
         console.log("host recieved vote");
         var mission = clientGame.missions[clientGame.missionNumber]; 
@@ -190,18 +200,7 @@ function createUser(isHost){
 
 /* Game Specific functions */
 
-// function submitUsers(){
-//     var selectableUsers = clientGame.users;
-//     var users = [];
-
-//     for(var i = 0; i < clientGame.missions[clientGame.missionNumber]; i++){
-//         //handle user selection from view
-//     }
-
-
-//     socket.emit('chosenMissionUsers', users);
-// }
-
+//display the end game based on results
 function endGame(result){
     if(result){
         clientGame.screen = 'goodWinScreen';
@@ -213,6 +212,7 @@ function endGame(result){
     generateView();
 }
 
+//Check if the mission has been approved or rejected
 function checkMissionApprovalVotes(){
     var mission = clientGame.missions[clientGame.missionNumber]; 
     
@@ -250,7 +250,7 @@ function checkMissionApprovalVotes(){
     console.log("Fail votes " + mission.rejectVotes);
 }
 
-
+//check if the mission has passed or failed
 function checkMissionVotes(){
     var mission = clientGame.missions[clientGame.missionNumber]; 
     
@@ -290,6 +290,7 @@ function checkMissionVotes(){
                 for(var i=0; i<clientGame.users.length; i++){
                     if(clientGame.users[i].role == "assassin"){
                         assassin = clientGame.users[i];
+                        break;
                     }
                 }
 
@@ -310,46 +311,54 @@ function checkMissionVotes(){
     console.log("Fail votes " + mission.rejectVotes);
 }
 
-
+//set up roles
 function gameSetup(){
     var roles;
     var leader;
     var missionNumbers;
+    var requiredFails;
     
     //assign roles and mission based on number of players
     switch(clientGame.users.length){
         case 5:
+            requiredFails = [1,1,1,1,1];
             missionNumbers = [2,3,2,3,3];        
             roles = ["merlin","good","good","assassin","evil"];
             break;
         case 6:
+            requiredFails = [1,1,1,1,1];
             missionNumbers = [2,3,4,3,4];        
             roles = ["merlin","good","good","good","assassin","evil"];
             break;
         case 7:
+            requiredFails = [1,1,1,2,1];
             missionNumbers = [2,3,3,4,4];        
             roles = ["merlin","good","good","good","assassin","evil","evil"];
             break;
         case 8:
+            requiredFails = [1,1,1,2,1];
             missionNumbers = [3,4,4,5,5];
             roles = ["merlin","good","good","good","good","assassin","evil","evil"];
             break;
         case 9:
+            requiredFails = [1,1,1,2,1];
             missionNumbers = [3,4,4,5,5];
             roles = ["merlin","good","good","good","good","good","assassin","evil","evil"];
             break;
         case 10:
+            requiredFails = [1,1,1,2,1];
             missionNumbers = [3,4,4,5,5];
             roles = ["merlin","good","good","good","good","good","assassin","evil","evil","evil"];
             break;  
         default: 
             //For testing
+            requiredFails = [1,1,1,1,1];
             missionNumbers = [1,1,1,1,1];
             roles = ["merlin","evil","evil","assassin","evil"];
     }
 
     for(var i = 0; i<5; i++){
-        clientGame.missions.push(new Mission(missionNumbers[i]));
+        clientGame.missions.push(new Mission(missionNumbers[i], requiredFails[i]));
     }
 
     shuffle(roles);
@@ -358,25 +367,14 @@ function gameSetup(){
         clientGame.users[i].role = roles[i];
     } 
 
-    //assign leaders for missions
+    //assign leader for 1st mission
     leader = Math.floor(Math.random() * (clientGame.users.length));
-    //clientGame.users[leader].isLeader = true;
     console.log("LEADER INDEX = " + leader);
     clientGame.leaderIndex = leader;
     clientGame.missions[0].leader = clientGame.users[leader];
-
-    // for(var i = 0; i < clientGame.missions.length; i++){
-    //     if(leader == clientGame.users.length){
-    //         leader = 0;
-    //     }
-    //     clientGame.missions[i].leader = clientGame.users[leader];
-    //     leader++;
-    // }
 }
 
-
-
-
+//shuffle an array
 function shuffle(a) {
     var j, x, i;
     for (i = a.length - 1; i > 0; i--) {
@@ -385,4 +383,12 @@ function shuffle(a) {
         a[i] = a[j];
         a[j] = x;
     }
+}
+
+//generate a user id
+function generateId(length){
+    var uid = "";
+    function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
+    for(var i = 0; i < length; i++){ uid += s4(); }
+    return uid;
 }

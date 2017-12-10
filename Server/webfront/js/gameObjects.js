@@ -10,8 +10,7 @@ function User(){
     this.clientVerificationId = "";
     
     //game specific properties
-    this.isLeader = false;
-    this.alignment = "";
+    //this.alignment = "";
     this.role = "";
 }
 
@@ -33,13 +32,13 @@ function Game(host){
 }
 
 
-function Mission(numPlayers){
+function Mission(numPlayers, numFails){
     this.selectedUsers = [];
     this.numPlayers = numPlayers;
     this.leader = "";
     this.status = 0;  //1 pass, 2 fail, 0 nothing 
     this.approved;
-    this.requiredFails = 1;
+    this.requiredFails = numFails;
 
     //team Voting
     this.acceptMissionVotes = [];

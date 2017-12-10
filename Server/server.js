@@ -23,6 +23,7 @@ io.on('connection', function(client) {
         client.to(client.user.room).emit('syncGamestate', game);
     });
 
+    //emit an event to a specific client
     client.on('emitToSpecificClient', function(event, userId){
         console.log("emitting to specific client " + event);
         if(client.id == userId){
@@ -32,26 +33,31 @@ io.on('connection', function(client) {
         }
     });
 
+    //begin the vote to approve/deny team
     client.on('teamSubmittedForApproval', function(game){
         client.emit('startVoteOnTeam');
         client.to(client.user.room).emit('startVoteOnTeam');
     });
 
+    //trigger the end game by passing the final result
     client.on('gameResult', function(result){
         console.log("User sent vote");
         client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('endGame', result);
     });
 
+    //send approve/deny team vote to host
     client.on('userTeamApprovalVote', function(vote){
         console.log("User sent vote");
         client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedUserTeamVote', vote);
     });
 
+    //send pass/fail mission vote to host
     client.on('missionUserVote', function(vote){
         console.log("User sent vote");
         client.to(io.sockets.adapter.rooms[client.user.room].host.clientId).emit('recievedMissionVote', vote);
     });
 
+    //emit an event to a group of clients
     client.on('emitToSpecificUsers', function(event, users){
         for(var i = 0; i < users.length; i++){
             if(users[i].clientId == client.id){
@@ -73,11 +79,13 @@ io.on('connection', function(client) {
         }
     });
 
+    //set game isInProgress flag to true
     client.on('startGame', function(){
         console.log("Room " + client.user.room + " has started the game");
         io.sockets.adapter.rooms[client.user.room].isInProgress = true;
     });
 
+    //send selected mission users to host
     client.on('chosenMissionUsers', function(users){
         var host = io.sockets.adapter.rooms[client.user.room].host.clientId;
         client.to(host).emit('updateMissionUsers', users);
@@ -145,6 +153,12 @@ io.on('connection', function(client) {
             if(client.user.isHost){
                 client.to(client.user.room).emit('connectError', "Host has left the game, the game has ended");
             } else {
+                // if(io.sockets.adapter.rooms[client.user.room].isInProgress != null){
+                //     if(io.sockets.adapter.rooms[client.user.room].isInProgress){
+                //         client.to(client.user.room).emit('connectError', "A User has left the game, the game has ended");
+                //     }
+                // }
+
                 console.log(client.user.username + " with ID "+client.id+" Disconnected from Room " + client.user.room);
                 
                 if (io.sockets.adapter.rooms[client.user.room] != null){

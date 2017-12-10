@@ -2,10 +2,12 @@
 
 //Button assignment
 $(document).ready( function(){
+
     $('#closePlayerCardButton').click(function(){
-        $('#myCharacter').modal('hide');
+        $('.modal').modal('hide');
     });
 
+    //being selecting a team
     $('#startTeamSelection').click(function(){
         clientGame.missions[clientGame.missionNumber].selectedUsers = [];
         generateUserChoiceList();
@@ -116,6 +118,7 @@ $(document).ready( function(){
             for(var i = 0; i < mission.selectedUsers.length; i++){
                 playerList += "<li class='list-group-item'>"+ mission.selectedUsers[i].username +"</li>"
             }
+
             $('#missionInfoUserList').html(playerList);
 
             $('#missionInfoModal').modal('show');
@@ -130,6 +133,7 @@ $(document).ready( function(){
         $(this).hide();
     });
     
+    //reject or accept mission buttons
     $('.teamAcceptButton').click(function(){
         if($(this).val() == "Yes"){
             console.log("inside first if teamAcceptButton");
@@ -153,6 +157,7 @@ $(document).ready( function(){
         $('#teamApprovalModal').modal('hide');
     });
     
+    //pass or fail mission buttons
     $('.missionSuccessButton').click(function(){
         if($(this).val() == "Succeed" || clientUser.role == "good" || clientUser.role == "merlin"){
             if(clientUser.isHost){
@@ -173,55 +178,7 @@ $(document).ready( function(){
     });
 });
 
-function generateUserVoteList(){
-    var userString = "";
-    var mission = clientGame.missions[clientGame.missionNumber];
-
-    if(mission.approved){
-        $('#teamVotingResultDialog').html("Mission Team Accepted");
-    } else {
-        $('#teamVotingResultDialog').html("Mission Team Rejected");
-    }
-    
-    for(var i = 0; i < mission.acceptMissionVotes.length; i++){
-        if (mission.acceptMissionVotes[i].vote == "Yes") {
-            userString += "<li class='list-group-item list-group-item-success'>"+ mission.acceptMissionVotes[i].username +"</li>";
-        } else {
-            userString += "<li class='list-group-item list-group-item-danger'>"+ mission.acceptMissionVotes[i].username +"</li>";
-        }
-    }
-    
-    $('#teamVotingResultList').html(userString);
-}
-
-function generateUserChoiceList(){
-    $('#missionSelectionDialog').html("Leader, choose " + clientGame.missions[clientGame.missionNumber].numPlayers + " players for this mission");    
-    var $userList = $('#missionUserSelectionList');
-    var userListString = "";
-    
-
-    for(var i = 0; i< clientGame.users.length; i++){
-        userListString += "<button class='btn btn-primary missionSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
-    }
-
-    $userList.html(userListString);
-}
-
-function generateAssassinChoiceList(){    
-    var $userList = $('#assassinSelectionList');
-    var userListString = "";
-    
-
-    for(var i = 0; i< clientGame.users.length; i++){
-        if(clientGame.users[i].role == "merlin" || clientGame.users[i].role == "good"){
-            userListString += "<button class='btn btn-primary assassinSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
-        }
-    }
-
-    $userList.html(userListString);
-}
-
-
+//generate the view based on current screen
 function generateView(){
     switch(clientGame.screen){
         case 'lobbyScreen':
@@ -281,6 +238,60 @@ function generateView(){
     }
 }
 
+
+//generate list of results from mission voting
+function generateUserVoteList(){
+    var userString = "";
+    var mission = clientGame.missions[clientGame.missionNumber];
+
+    if(mission.approved){
+        $('#teamVotingResultDialog').html("Mission Team Accepted");
+    } else {
+        $('#teamVotingResultDialog').html("Mission Team Rejected");
+    }
+    
+    for(var i = 0; i < mission.acceptMissionVotes.length; i++){
+        if (mission.acceptMissionVotes[i].vote == "Yes") {
+            userString += "<li class='list-group-item list-group-item-success'>"+ mission.acceptMissionVotes[i].username +"</li>";
+        } else {
+            userString += "<li class='list-group-item list-group-item-danger'>"+ mission.acceptMissionVotes[i].username +"</li>";
+        }
+    }
+    
+    $('#teamVotingResultList').html(userString);
+}
+
+//generate user choice for mission leader
+function generateUserChoiceList(){
+    $('#missionSelectionDialog').html("Leader, choose " + clientGame.missions[clientGame.missionNumber].numPlayers + " players for this mission");    
+    var $userList = $('#missionUserSelectionList');
+    var userListString = "";
+    
+
+    for(var i = 0; i< clientGame.users.length; i++){
+        userListString += "<button class='btn btn-primary missionSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
+    }
+
+    $userList.html(userListString);
+}
+
+//generate list of good players for assassination attempt
+function generateAssassinChoiceList(){    
+    var $userList = $('#assassinSelectionList');
+    var userListString = "";
+    
+
+    for(var i = 0; i< clientGame.users.length; i++){
+        if(clientGame.users[i].role == "merlin" || clientGame.users[i].role == "good"){
+            userListString += "<button class='btn btn-primary assassinSelectionItem' value='"+i+"'>"+clientGame.users[i].username+"</button>";
+        }
+    }
+
+    $userList.html(userListString);
+}
+
+
+//list of users going on mission
 function updateMissionUserList(){
     var userString = "";
     var mission = clientGame.missions[clientGame.missionNumber];
@@ -305,6 +316,7 @@ function transitionScreens(nextScreen){
     $(nextScreen).show();
 }
 
+//display newly joined user
 function updateLobby(){
     var $startButton = $('#startButton');
 
@@ -335,18 +347,13 @@ function updateLobby(){
     $('#userList').html(lobbyContent);
 }
 
-function generateId(length){
-    var uid = "";
-    function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
-    for(var i = 0; i < length; i++){ uid += s4(); }
-    return uid;
-}
-
+//display error screen
 function errorScreen(message){
     $('#errorMessage').html(message);
     $('#errorScreen').show();
 }
 
+//display info in player card
 function updatePlayerCard(){
     $('#playerName').html(clientUser.username);
     
@@ -371,6 +378,7 @@ function updatePlayerCard(){
 
 }
 
+//list of evil players for merlin and evil
 function showEvilCharacters(){
     var evilPlayers = "";
     evilPlayers += "<li class='list-group-item list-group-item-danger'>Minions of Mordred</li>";
@@ -382,15 +390,28 @@ function showEvilCharacters(){
     $('#evilPlayerList').html(evilPlayers);
 }
 
+//display mission vote bar
 function updateVoteBar(){
     var voteString = "";
     for(var i = 0; i < 5; i++){
         if (clientGame.missions[i].status == 1) {
-            voteString += "<div class='vote visibleText' style='background-color:#2f3bd3;'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            if(clientGame.missions[i].requiredFails > 1){
+                voteString += "<div class='vote visibleText' style='background-color:#2f3bd3;'>"+(clientGame.missions[i].numPlayers)+"*</div>";   
+            } else {
+                voteString += "<div class='vote visibleText' style='background-color:#2f3bd3;'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            }
         } else if (clientGame.missions[i].status == 2) {
-            voteString += "<div class='vote visibleText' style='background-color:#d12525;'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            if(clientGame.missions[i].requiredFails > 1){
+                voteString += "<div class='vote visibleText' style='background-color:#d12525;'>"+(clientGame.missions[i].numPlayers)+"*</div>";
+            } else {
+                voteString += "<div class='vote visibleText' style='background-color:#d12525;'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            }
         } else {
-            voteString += "<div class='vote'>"+(clientGame.missions[i].numPlayers)+"</div>";
+            if(clientGame.missions[i].requiredFails > 1){
+                voteString += "<div class='vote'>"+(clientGame.missions[i].numPlayers)+"*</div>";
+            } else {
+                voteString += "<div class='vote'>"+(clientGame.missions[i].numPlayers)+"</div>";           
+             }
         }
     }
     $('#voteContainer').html(voteString);
