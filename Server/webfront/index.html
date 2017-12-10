@@ -6,7 +6,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width = device-width, initial-scale = 1">
                
-        
         <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -17,7 +16,6 @@
         <script src="js/view.js"></script>
         <script src="js/client.js"></script>
         
-
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <!-- <link rel="stylesheet" type="text/css" href="js/Vendor/bootstrap-3.3.7-dist/css/bootstrap.min.css"> -->
         <link rel="stylesheet" type="text/css" href="gamepage.css">        
@@ -26,13 +24,19 @@
 
     <body style="text-align:center">
         
+        <!--Individual ID's are given to each div so that hiding and showing can be implemented on each bit of content-->
+        
+        <!--Implementing Bootstrap's resizability. Content will stretch all 12 columns and thus the full width of the page-->
         <div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
+            
+            <!--Error Screen is an error bar that displays on top of the screen on the event of a user leaving-->
+            <!--Handling done in client.js-->
             <div id="errorScreen" class="gameScreen row alert alert-danger" style="display:none;">
                 <strong>Connection Error</strong><br>
                 <p id="errorMessage"></p>
             </div>
 
+            <!--For Joining or creating a game session-->
             <div id="startScreen" class="gameScreen container" style="display:block;">
                 <h4 class="visibleText" style="margin-top:30px;">Enter Username</h4>    
                 <input type="text" id="username" style="margin-bottom:20px;"><br>
@@ -44,23 +48,24 @@
                 
             </div>
 
+            <!--Displays list of members in current session-->
             <div id="lobbyScreen" class="gameScreen container col-lg-offset-4 col-lg-4" style="display:none;">
                 <div class="visibleText">
                     <h3>Players Connected</h3>
+                    <!--Changes dynamically-->
                     <span id="numPlayers">0</span> <span>/ 10</span>
                     <br>
                     <h5 id="lobbyDisplay" style="margin-top: 40px; display: none;">Lobby Code: <span id="lobbyCode"></span></h5>
                     <h4 style="margin-top: 30px">Players</h4>
                 </div>
-
                 
                 <ul id ="userList" class="list-group">
                 </ul>
-
+                
                 <button id="startButton" style="margin-top: 40px;display: none;" class="btn btn-primary" disabled="disabled">Start Game</button>
             </div>
 
-            
+            <!--gameScreen is the ID used in the js to hide and show-->
             <div id="gameScreen" class="gameScreen" style="display:none;">
                     
                 <div class="text-center">
@@ -70,7 +75,8 @@
                     <div id="voteContainer">
                     </div>
                 </div>
-                        
+                
+                <!--implements the bars and their classes which change which active class has the striped bar animation and also for the click information for that quest's members-->
                 <div id="missionProgressBars" class="progress">
                     <div id="mission1" value="0" class="progress-bar quest active visibleText" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Quest 1</div>
                     
@@ -83,13 +89,15 @@
                     <div id="mission5" value="4" class="progress-bar quest visibleText active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Quest 5</div>
                     
                 </div>
-
+                
+                <!--Listing the current quest members-->
                 <div class="container col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
                    <ul id="currentMissionUserList" class="list-group">
 
                    </ul>
                 </div>	
-
+                
+                <!--Selection process for teams and mission starting buttons-->
                 <button id="startTeamSelection" class="btn btn-primary teamButtons" style="display:none">Select Team</button>
                 <br>
                 <button id="submitTeamSelection" class="btn btn-primary teamButtons" style="display:none">Confirm Team</button>
@@ -116,11 +124,11 @@
                             <ul id="evilPlayerList" class="list-group">
                             </ul>
 
-                            
                             <button id="closePlayerCardButton" class="btn btn-primary">Close</button>
                         </div>
                 </div>
 
+                <!--Modal that appears with the users' names in order to select the quest goers-->
                 <div id="missionTeamSelect" class="modal fade cardModal"  role="dialog">
                     <div class="modal-dialog">
                         <!-- Modal content-->
@@ -144,8 +152,7 @@
                     </div>
                 </div>
                 
-                
-              
+
                 <!-- Team Approval Modal -->
                 <div class="modal fade" id="teamApprovalModal" role="dialog" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
@@ -217,7 +224,7 @@
                 </div>
             
                     
-                <!-- Succes or Fail modal -->
+                <!-- Success or Fail modal -->
                 <div class="modal fade" id="missionVotingModal" role="dialog" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
                         <!-- Modal content-->
@@ -264,7 +271,8 @@
                     </div>
                 </div>
             </div>
-
+            
+            <!--Winner Winner Chicken Dinner-->
             <div id="goodWinScreen" class="gameScreen container" style="display:none;">
                 <h1 class="text-center visibleText">Good Wins!</h1>
             </div>
