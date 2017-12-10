@@ -6,6 +6,8 @@
 
 5-10 players
 
+[Team Member Contributions and Trailer](https://www.youtube.com/watch?v=hFSwJDGHnxs)
+
 # Rules
 
 [Official Rules](http://www.skiptherulebook.com/2016/09/18/avalon/)
@@ -48,15 +50,12 @@ There is a UML diagram and SQL statements for a potential database that can stor
 
 # Team Contributions
 
-### Alex Brooks
+### Front End Development
+- Ian Smith
+- Jacob Krajewski
+- Austin Sizemore
 
-### Austin Sizemore
-
-### Ian Smith
-Ian worked primarily with the front-end aspects of the project, including but not limited to designing the gameboard and the modals used for team approval and mission success. He used bootstrap for styling and responsiveness of webpages and javascript for various button functionalities. Ian also worked on the functions for the Assassin's choice of Merlin.
-
-### Jacob Krajewski
-
-### Joey Frank
-
-### Nathan Schlechte
+### Back End Development
+- Joey Frank
+- Nathan Schlechte
+- Alex Brooks
