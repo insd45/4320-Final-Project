@@ -53,6 +53,7 @@ There is a UML diagram and SQL statements for a potential database that can stor
 ### Austin Sizemore
 
 ### Ian Smith
+Ian worked primarily with the front-end aspects of the project, including but not limited to designing the gameboard and the modals used for team approval and mission success. He used bootstrap for styling and responsiveness of webpages and javascript for various button functionalities. Ian also worked on the functions for the Assassin's choice of Merlin.
 
 ### Jacob Krajewski
 
