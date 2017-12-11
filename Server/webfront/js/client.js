@@ -1,7 +1,7 @@
 /* Game Controller */
 
 var socket = io();
-const MIN_PLAYERS = 1;
+const MIN_PLAYERS = 5;
 var clientUser;
 var clientGame;
 
