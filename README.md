@@ -52,9 +52,12 @@ The first team to achieve 3 quests towards their alignment wins. However, if the
 Good luck, and have fun deceiving your friends!
 
 # Implementation
+server.js and client.js make up the back end of the game. Utlizing Node js and socket io, clients can send and recieve data to and from our server. The initial host of a "room" becomes the central hub of the game, receiving data from the clients. They add this data to a master Game object, and then distribute it back out to all clients. The architecture for this backend can be read [here](Server/notes/architecture.txt).
+
+
 View.js uses javascript and socket.io to implement the main aspects of the game.  These functions act as the “rules” to the game.  Some basic methods include checking whether a majority of the votes either passed or failed a mission.  Other functions handle modal’s and when they are to be displayed or hidden.
 
-Index.html and the CSS is used to create a user friendly UI and overall experience.  The traditional game board was reimagined when adapting it for the web.  The 5 circles at the top show the success of each mission and how many players are to go on the mission.  The Quest bar below displays the current mission and the player can select on pass missions to view the results.  Finally, in the bottom left there is the player card which displays your current identity and any other information that comes with being that character.
+Index.html and the CSS is used to create a user friendly UI and overall experience.  The traditional game board was reimagined when adapting it for the web.  The 5 circles at the top show the success of each mission and how many players are to go on the mission.  The Quest bar below displays the current mission and the player can select or pass missions to view the results.  Finally, in the bottom left there is the player card which displays your current identity and any other information that comes with being that character.
 
 There is a UML diagram and SQL statements for a potential database that can store user data such as their username and password.  This database did not make this release but is planned to be included in a future release.
 
@@ -70,11 +73,20 @@ There is a UML diagram and SQL statements for a potential database that can stor
 - Nathan Schlechte
 - Alex Brooks
 
-# Screen Shot
+# Screen Shots
+
+<img src="ScreenShots/IMG_0418.png" width="33%">
+<img src="ScreenShots/IMG_0419.png" width="33%">
+<img src="ScreenShots/IMG_0420.png" width="33%">
+<img src="ScreenShots/IMG_0421.png" width="33%">
+<img src="ScreenShots/IMG_0423.png" width="33%">
+<img src="ScreenShots/IMG_0424.png" width="33%">
+<img src="ScreenShots/IMG_0425.png" width="33%">
+<!-- 
 ![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0418.png)
 ![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0419.png)
 ![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0420.png)
 ![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0421.png)
 ![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0423.png)
 ![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0424.png)
-![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0425.png)
+![](https://github.com/insd45/4320-Final-Project/blob/master/ScreenShots/IMG_0425.png) -->
